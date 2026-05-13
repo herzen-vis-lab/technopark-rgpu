@@ -1,0 +1,453 @@
+
+
+@import url("../twentytwentyfour/style.css");
+
+
+.bg-primary {
+    background-color: var(--color-primary, #64BDE1);
+}
+
+.text-primary {
+    color: var(--color-primary, #64BDE1);
+}
+
+.tp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    min-height: 40px;
+    padding: 0 80px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    font-size: inherit; 
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 200ms ease, background-color 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.tp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+}
+
+.tp-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tp-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #3b82f6) 35%, white);
+}
+
+.tp-btn--dark {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.tp-btn--primary {
+    background-color: var(--color-primary, #3b82f6);
+    color: #ffffff;
+}
+
+.tp-btn--outline {
+    background-color: transparent;
+    border-color: var(--color-primary, #3b82f6);
+    color: #000000;
+}
+
+.tp-btn--outline-light {
+    background-color: transparent;
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.tp-btn--white {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.nav-link,
+.nav-link:visited {
+    color: #000000;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: var(--color-primary, #64BDE1);
+}
+
+
+.tp-hero-title {
+    color: #ffffff;
+}
+
+.tp-hero-subtitle {
+    color: #ffffff;
+}
+
+.footer-link,
+.footer-link:visited {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 200ms ease, opacity 200ms ease;
+}
+
+.footer-link:hover {
+    color: var(--color-primary, #64BDE1);
+}
+
+.tp-stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 180px;
+    height: 180px;
+    border-radius: 14px;
+    background-color: var(--color-primary, #64BDE1);
+    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* @media (min-width: 640px) {
+    .tp-stat-card {
+        max-width: 220px;
+        height: 220px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .tp-stat-card {
+        max-width: 290px;
+        height: 290px;
+    }
+} */
+
+.tp-faq-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0px 40px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    color: #000000;
+    transition: color 200ms ease;
+}
+
+.tp-faq-item:hover .tp-faq-trigger {
+    color: var(--color-primary, #64BDE1);
+}
+
+.tp-faq-item {
+    border-radius: 16px;
+    background: #ffffff;
+    overflow: hidden;
+    transition: background-color 200ms ease;
+    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.25);
+}
+
+.tp-faq-item:hover {
+    background-color: rgba(100, 189, 225, 0.08);
+}
+
+.tp-faq-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transform: rotate(180deg);
+    transition: transform 200ms ease;
+}
+
+.tp-faq-icon.is-open {
+    transform: rotate(0deg);
+}
+
+.tp-faq-content {
+    background: #ffffff;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 280ms ease;
+}
+
+.tp-faq-content-inner {
+    padding: 0 40px 20px 40px;
+}
+
+.tp-direction-card {
+    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+}
+
+.tp-direction-card:hover {
+    transform: translateY(-3px);
+    background-color: rgba(100, 189, 225, 0.06);
+}
+
+.team-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    position: relative !important;
+    margin-top: 5rem !important;
+}
+
+.team-pagination .swiper-pagination-bullet {
+    background: #cbd5e1 !important;
+    opacity: 1 !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+}
+
+.team-pagination .swiper-pagination-bullet-active {
+    background: var(--color-primary, #64BDE1) !important;
+    width: 24px !important;
+    border-radius: 20px !important;
+}
+
+.team-swiper-button-prev,
+.team-swiper-button-next {
+    width: 40px !important;
+    height: 40px !important;
+    background: transparent !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+}
+
+.team-swiper-button-prev:hover,
+.team-swiper-button-next:hover {
+    opacity: 1 !important;
+}
+
+.team-swiper-button-prev::after,
+.team-swiper-button-next::after {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: var(--color-primary, #64BDE1) !important;
+    opacity: 0.5 !important;
+}
+
+.team-swiper-button-prev:hover::after,
+.team-swiper-button-next:hover::after {
+    opacity: 1 !important;
+}
+
+
+.team-pagination .swiper-pagination-bullet {
+    background: #cbd5e1 !important;
+    opacity: 1 !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+}
+
+.team-pagination .swiper-pagination-bullet-active {
+    background: var(--color-primary, #64BDE1) !important;
+    width: 24px !important;
+    border-radius: 20px !important;
+}
+
+.teamSwiper {
+    overflow: hidden !important;
+    padding: 20px !important; 
+}
+
+.teamSwiper .swiper-slide {
+    height: auto !important;
+}
+
+
+.team-swiper-button-prev {
+    left: -20px !important;
+    right: auto !important;
+}
+
+.team-swiper-button-next {
+    right: -20px !important;
+    left: auto !important;
+}
+
+.team-swiper-button-prev,
+.team-swiper-button-next {
+    width: 40px !important;
+    height: 40px !important;
+    background: transparent !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+    position: absolute !important;
+    top: 45% !important;
+    transform: translateY(-50%) !important;
+    z-index: 20 !important;
+}
+
+.team-swiper-button-prev::after,
+.team-swiper-button-next::after {
+    font-size: 24px !important;
+    font-weight: bold !important;
+    color: var(--color-primary, #64BDE1) !important;
+    opacity: 0.5 !important;
+}
+
+.team-swiper-button-prev:hover::after,
+.team-swiper-button-next:hover::after {
+    opacity: 1 !important;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+
+.gallery-slide {
+    display: none;
+}
+.gallery-slide:first-child {
+    display: block;
+}
+
+
+.bvi-shortcode a {
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 13px !important;
+}
+.bvi-shortcode a svg {
+    width: 16px !important;
+    height: 16px !important;
+}
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.prose p {
+    margin-bottom: 1em;
+    line-height: 1.6;
+}
+
+.prose strong,
+.prose b {
+    font-weight: 700;
+}
+
+.prose ul,
+.prose ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+}
+
+.prose li {
+    margin-bottom: 0.5em;
+}
+
+    
+.mobile-faq-icon {
+    transition: transform 0.3s ease;
+}
+    
+/* .rotate-180 {
+    transform: rotate(180deg) !important;
+} */
+
+@layer base {
+  h1 {
+    font-size: var(--font-size-h1);
+    line-height: var(--line-height-h1);
+    font-weight: 700;
+  }
+  h2 {
+    font-size: var(--font-size-h2);
+    line-height: var(--line-height-h2);
+    font-weight: 300;
+  }
+  h3 {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-h3);
+    font-weight: 600;
+  }
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+}
+
+
+/* ==================== SVG ИКОНКИ ==================== */
+
+/* Базовый размер и цвет для всех SVG в карточках направлений */
+.tp-direction-card svg {
+    width: 80px !important;
+    height: 80px !important;
+    color: var(--color-primary) !important; 
+    fill: currentColor !important;
+}
+
+.cards-with-icon-icon {
+    color: #ffffff;
+}
+
+.cards-with-icon-icon svg,
+.cards-with-icon-icon svg * {
+    fill: currentColor !important;
+    stroke: none !important;
+}
+
+/* На планшетах - чуть крупнее */
+@media (min-width: 768px) {
+    .tp-direction-card svg {
+        width: 90px !important;
+        height: 90px !important;
+    }
+}
+
+/* На десктопе - ещё крупнее */
+@media (min-width: 1024px) {
+    .tp-direction-card svg {
+        width: 90px !important;
+        height: 90px !important;
+    }
+}
+
+/* Принудительно перекрашиваем все внутренние элементы SVG */
+.tp-direction-card svg,
+.tp-direction-card svg path,
+.tp-direction-card svg circle,
+.tp-direction-card svg rect,
+.tp-direction-card svg polygon,
+.tp-direction-card svg g,
+.tp-direction-card svg * {
+    fill: currentColor !important;
+    stroke: none !important;
+}
+
+/* Убираем любые эффекты при наведении (иконки не меняются) */
+.tp-direction-card:hover svg,
+.tp-direction-card:hover svg path,
+.tp-direction-card:hover svg circle,
+.tp-direction-card:hover svg rect,
+.tp-direction-card:hover svg polygon,
+.tp-direction-card:hover svg g,
+.tp-direction-card:hover svg * {
+    fill: currentColor !important;
+}
+
