@@ -2,6 +2,9 @@
 
 @import url("../twentytwentyfour/style.css");
 
+body {
+    margin: 0;
+}
 
 .bg-primary {
     background-color: var(--color-primary, #64BDE1);
