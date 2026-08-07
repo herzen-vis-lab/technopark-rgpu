@@ -144,7 +144,7 @@ body {
     color: #000000;
     transition: color 200ms ease;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .tp-faq-item:hover .tp-faq-trigger {
