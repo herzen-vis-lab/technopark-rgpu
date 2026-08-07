@@ -33,17 +33,18 @@ $secondary_button_link = $button_2_link ?: home_url('/event/');
 <section class="py-4">
     <div class="relative mx-auto w-full max-w-7xl overflow-hidden rounded-[20px] shadow-custom">
         <?php if (!empty($hero_image_url)) : ?>
-            <img
-                src="<?php echo esc_url($hero_image_url); ?>"
-                alt="<?php echo esc_attr($hero_title ?: 'Hero'); ?>"
-                class="absolute inset-0 h-full w-full object-cover object-center"
-            >
+            <img src="<?php echo esc_url($hero_image_url); ?>"
+                 alt="<?php echo esc_attr($hero_title ?: 'Hero'); ?>"
+                 class="absolute inset-0 h-full w-full object-cover object-center"
+                 loading="lazy">
         <?php endif; ?>
 
         <div class="absolute inset-0 bg-black/70"></div>
 
-        <div class="relative z-10 flex items-center justify-center md:justify-start p-6 md:p-10 lg:p-12 min-h-[500px] md:min-h-[550px] lg:min-h-[592px]">
-            <div class="w-full max-w-[90%] md:max-w-[70%] lg:max-w-[520px] text-white text-center md:text-left">
+        <div class="relative z-10 flex items-center justify-center p-6 md:p-10 lg:p-12 min-h-[500px] md:min-h-[550px] lg:min-h-[592px]">
+            <div class="w-full max-w-[90%] md:max-w-[70%] lg:max-w-[520px] text-white text-left">
+                <!-- ↑ убрал text-center, оставил только text-left -->
+                
                 <?php if (!empty($hero_title)) : ?>
                     <h2 class="tp-hero-title break-words"><?php echo esc_html($hero_title); ?></h2>
                 <?php endif; ?>
@@ -52,7 +53,8 @@ $secondary_button_link = $button_2_link ?: home_url('/event/');
                     <p class="mt-4 text-body tp-hero-subtitle break-words"><?php echo wp_kses_post(nl2br(esc_html($hero_text))); ?></p>
                 <?php endif; ?>
 
-                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <!-- Кнопки: центрируем на мобилках, слева на десктопе -->
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center sm:justify-start">
                     <a href="<?php echo esc_url($primary_button_link); ?>" class="tp-btn tp-btn--primary text-body text-center">
                         <?php echo esc_html($primary_button_text); ?>
                     </a>
