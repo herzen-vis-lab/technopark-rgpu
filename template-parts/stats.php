@@ -44,7 +44,7 @@ if (empty($stats_items)) {
 
 <section id="stats" class="py-4">
     <h2 class="text-black text-center py-2">Мы в цифрах</h2>
-    <div class="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
+    <div class="mt-8 grid grid-cols-2 gap-4 md:gap-5 lg:grid-cols-4">
         <?php foreach ($stats_items as $item) : ?>
             <article class="tp-stat-card">
                 <?php if (!empty($item['number'])) : ?>

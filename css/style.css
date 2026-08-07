@@ -109,15 +109,14 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-width: 140px; /* минимальная ширина */
-    max-width: 290px;
-    aspect-ratio: 1 / 1; /* сохраняем квадратную форму */
+    aspect-ratio: 1 / 1;
     border-radius: 14px;
     background-color: var(--color-primary, #64BDE1);
     box-shadow: 0 0px 4px rgba(0, 0, 0, 0.25);
     padding: 16px;
     text-align: center;
-    overflow: hidden; /* чтобы ничего не вылезало */
+    overflow: hidden;
+    /* Убираем min-width и max-width — сетка сама управляет размером */
 }
 
 /* Чтобы текст в карточках не ломал размер */
@@ -160,9 +159,8 @@ body {
 /* Адаптация для мобильных устройств */
 @media (max-width: 640px) {
     .tp-stat-card {
-        min-width: 120px; /* чуть меньше на мобилках */
-        max-width: 200px;
         padding: 12px;
+        min-height: 140px; /* минимальная высота для очень маленьких экранов */
     }
     
     .tp-stat-card .stat-number {
@@ -172,6 +170,23 @@ body {
     .tp-stat-card .stat-label {
         font-size: 0.75rem;
         margin-top: 8px;
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 400px) {
+    .tp-stat-card {
+        padding: 8px;
+        min-height: 100px;
+    }
+    
+    .tp-stat-card .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .tp-stat-card .stat-label {
+        font-size: 0.65rem;
+        margin-top: 4px;
     }
 }
 
