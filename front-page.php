@@ -18,7 +18,7 @@ $logos = get_posts(array(
 <?php if (!empty($logos)) : ?>
 <div class="bg-primary py-3">
     <div class="max-w-7xl mx-auto px-6">
-        <div class="flex flex-wrap items-center justify-center gap-8">
+        <div class="partners-logos">
             <?php foreach ($logos as $logo) : 
                 $image_id = get_post_meta($logo->ID, '_logo_image', true);
                 $image_url = $image_id ? wp_get_attachment_url($image_id) : '';

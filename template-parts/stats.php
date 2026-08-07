@@ -46,14 +46,15 @@ if (empty($stats_items)) {
     <h2 class="text-black text-center py-2">Мы в цифрах</h2>
     <div class="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
         <?php foreach ($stats_items as $item) : ?>
-            <article class="bg-primary rounded-[14px] shadow-lg p-6 text-center flex flex-col items-center justify-center aspect-square">
+            <article class="tp-stat-card">
                 <?php if (!empty($item['number'])) : ?>
-                    <div class="text-black-128 leading-none text-white"><?php echo esc_html($item['number']); ?></div>
+                    <div class="stat-number"><?php echo esc_html($item['number']); ?></div>
                 <?php endif; ?>
 
                 <?php if (!empty($item['text'])) : ?>
-                    <h3 class="mt-3 text-white"><?php echo esc_html($item['text']); ?></h3>
+                    <h3 class="stat-label"><?php echo esc_html($item['text']); ?></h3>
                 <?php endif; ?>
+                
                 <?php if (!empty($item['extra'] ?? '')) : ?>
                     <p class="mt-2 text-small text-white"><?php echo esc_html($item['extra']); ?></p>
                 <?php endif; ?>
