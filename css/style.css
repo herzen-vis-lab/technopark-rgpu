@@ -102,17 +102,77 @@ body {
     color: var(--color-primary, #64BDE1);
 }
 
+/* Фиксируем размер карточек статистики */
 .tp-stat-card {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: 180px;
-    height: 180px;
+    min-width: 140px; /* минимальная ширина */
+    max-width: 290px;
+    aspect-ratio: 1 / 1; /* сохраняем квадратную форму */
     border-radius: 14px;
     background-color: var(--color-primary, #64BDE1);
     box-shadow: 0 0px 4px rgba(0, 0, 0, 0.25);
+    padding: 16px;
+    text-align: center;
+    overflow: hidden; /* чтобы ничего не вылезало */
+}
+
+/* Чтобы текст в карточках не ломал размер */
+.tp-stat-card .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+    word-break: break-word;
+}
+
+.tp-stat-card .stat-label {
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: #ffffff;
+    line-height: 1.3;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+/* Для больших экранов увеличиваем цифры */
+@media (min-width: 768px) {
+    .tp-stat-card .stat-number {
+        font-size: 3.5rem;
+    }
+    .tp-stat-card .stat-label {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .tp-stat-card .stat-number {
+        font-size: 4rem;
+    }
+    .tp-stat-card .stat-label {
+        font-size: 1.125rem;
+    }
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 640px) {
+    .tp-stat-card {
+        min-width: 120px; /* чуть меньше на мобилках */
+        max-width: 200px;
+        padding: 12px;
+    }
+    
+    .tp-stat-card .stat-number {
+        font-size: 2rem;
+    }
+    
+    .tp-stat-card .stat-label {
+        font-size: 0.75rem;
+        margin-top: 8px;
+    }
 }
 
 /* @media (min-width: 640px) {
