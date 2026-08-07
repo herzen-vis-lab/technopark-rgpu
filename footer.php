@@ -31,15 +31,13 @@ $socials = get_post_meta($settings_id, '_footer_socials', true) ?: [];
                     <a href="<?php echo esc_url($contact['link']); ?>" class="footer-link mt-2 inline-block"><?php echo esc_html($contact['text']); ?></a>
                 <?php endforeach; ?>
 
-                <div class="mt-4 flex items-center justify-center gap-4 md:justify-end">
+                <div class="mt-4 flex flex-col items-center gap-3 md:items-end">
                     <?php foreach ($socials as $social) : 
                         $social_name = '';
                         if (strpos($social['link'], 'vk.com') !== false) {
                             $social_name = 'ВКонтакте';
                         } elseif (strpos($social['link'], 'telegram') !== false) {
                             $social_name = 'Telegram';
-                        } elseif (strpos($social['link'], 'max') !== false) {
-                            $social_name = 'Max';    
                         } elseif (strpos($social['link'], 'youtube.com') !== false) {
                             $social_name = 'YouTube';
                         } elseif (strpos($social['link'], 'ok.ru') !== false) {
@@ -49,8 +47,8 @@ $socials = get_post_meta($settings_id, '_footer_socials', true) ?: [];
                         }
                         
                         $svg = $social['icon'];
-                        $svg = preg_replace('/width="[^"]+"/', 'width="30"', $svg);
-                        $svg = preg_replace('/height="[^"]+"/', 'height="30"', $svg);
+                        $svg = preg_replace('/width="[^"]+"/', 'width="24"', $svg);
+                        $svg = preg_replace('/height="[^"]+"/', 'height="24"', $svg);
                         $svg = str_replace('fill="#000000"', 'fill="currentColor"', $svg);
                         $svg = str_replace('fill="#000"', 'fill="currentColor"', $svg);
                         if (strpos($svg, 'fill=') === false) {
@@ -58,11 +56,12 @@ $socials = get_post_meta($settings_id, '_footer_socials', true) ?: [];
                         }
                     ?>
                         <a href="<?php echo esc_url($social['link']); ?>" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        aria-label="<?php echo esc_attr($social_name); ?>"
-                        class="inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-300 text-white hover:text-primary">
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           aria-label="<?php echo esc_attr($social_name); ?>"
+                           class="inline-flex items-center gap-3 transition-colors duration-300 text-white hover:text-primary">
                             <?php echo $svg; ?>
+                            <span class="text-body"><?php echo esc_html($social_name); ?></span>
                         </a>
                     <?php endforeach; ?>
                 </div>
@@ -90,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const scrollBtn = document.getElementById('scrollToTop');
     
     if (scrollBtn) {
-        // Показываем кнопку при прокрутке
         window.addEventListener('scroll', function() {
             if (window.scrollY > 300) {
                 scrollBtn.classList.remove('opacity-0', 'invisible');
@@ -101,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Плавный скролл наверх
         scrollBtn.addEventListener('click', function(e) {
             e.preventDefault();
             window.scrollTo({
