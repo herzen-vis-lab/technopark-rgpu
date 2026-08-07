@@ -143,10 +143,24 @@ body {
     text-align: left;
     color: #000000;
     transition: color 200ms ease;
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
 .tp-faq-item:hover .tp-faq-trigger {
     color: var(--color-primary, #64BDE1);
+}
+
+/* Для мобильных устройств */
+@media (max-width: 640px) {
+    .tp-faq-trigger {
+        font-size: 1.125rem; /* 18px - чуть меньше на мобилках, но всё равно больше стандартного */
+        padding: 0 20px; /* уменьшаем отступы на мобилках */
+    }
+    
+    .tp-faq-content-inner {
+        padding: 0 20px 20px 20px;
+    }
 }
 
 .tp-faq-item {
