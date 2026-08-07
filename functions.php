@@ -2153,3 +2153,178 @@ function add_svg_to_media_library($response, $attachment, $meta) {
     return $response;
 }
 add_filter('wp_prepare_attachment_for_js', 'add_svg_to_media_library', 10, 3);
+
+// ==================== ГЕРБЫ С ВОЗМОЖНОСТЬЮ СОРТИРОВКИ ====================
+
+function render_about_content_emblems($post) {
+    // Получаем сохранённые гербы в виде массива
+    $emblems = get_post_meta($post->ID, '_about_content_emblems', true);
+    
+    // Если данных нет, создаём массив с 3 пустыми местами
+    if (empty($emblems) || !is_array($emblems)) {
+        $emblems = array(
+            array('id' => '', 'title' => 'Герб 1'),
+            array('id' => '', 'title' => 'Герб 2'),
+            array('id' => '', 'title' => 'Герб 3'),
+        );
+    }
+    ?>
+    <div id="emblems-sortable" style="display:flex; flex-direction:column; gap:15px; max-width:500px;">
+        <?php foreach ($emblems as $index => $emblem) : 
+            $emblem_id = isset($emblem['id']) ? $emblem['id'] : '';
+            $emblem_title = isset($emblem['title']) ? $emblem['title'] : 'Герб ' . ($index + 1);
+            $emblem_url = $emblem_id ? wp_get_attachment_url($emblem_id) : '';
+            ?>
+            <div class="emblem-item" data-index="<?php echo $index; ?>" 
+                 style="display:flex; align-items:center; gap:15px; padding:15px; border:1px solid #ddd; background:#f9f9f9; cursor:grab; border-radius:8px;">
+                
+                <span style="cursor:grab; font-size:20px; color:#999;">⠿</span>
+                
+                <div style="flex:1;">
+                    <input type="text" 
+                           name="emblem_titles[]" 
+                           value="<?php echo esc_attr($emblem_title); ?>" 
+                           placeholder="Название герба" 
+                           style="width:100%; margin-bottom:8px;">
+                    
+                    <button type="button" class="button upload-emblem" data-index="<?php echo $index; ?>">
+                        Выбрать изображение
+                    </button>
+                    <input type="hidden" name="emblem_ids[]" class="emblem-id-<?php echo $index; ?>" value="<?php echo esc_attr($emblem_id); ?>">
+                    
+                    <div class="emblem-preview" style="margin-top:10px;">
+                        <?php if ($emblem_url) : ?>
+                            <img src="<?php echo esc_url($emblem_url); ?>" style="max-width:150px; max-height:100px;">
+                        <?php endif; ?>
+                    </div>
+                </div>
+                
+                <button type="button" class="button remove-emblem" style="color:red;">×</button>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    
+    <button type="button" id="add-emblem" class="button" style="margin-top:15px;">+ Добавить герб</button>
+    
+    <style>
+        .emblem-item.ui-sortable-helper {
+            background: #fff !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            cursor: grabbing !important;
+        }
+        .emblem-item.ui-sortable-placeholder {
+            border: 2px dashed #64BDE1 !important;
+            background: rgba(100, 189, 225, 0.05) !important;
+            min-height: 80px;
+        }
+    </style>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        // Сортировка
+        $('#emblems-sortable').sortable({
+            handle: '.emblem-item',
+            placeholder: 'emblem-item ui-sortable-placeholder',
+            update: function() {
+                // Обновляем индексы после сортировки
+                $('#emblems-sortable .emblem-item').each(function(index) {
+                    $(this).find('.upload-emblem').data('index', index);
+                    $(this).find('.emblem-id-' + $(this).data('index')).removeClass(function(i, cls) {
+                        return (cls.match(/emblem-id-\d+/g) || []).join(' ');
+                    }).addClass('emblem-id-' + index);
+                    $(this).data('index', index);
+                });
+            }
+        });
+        
+        // Загрузка изображений
+        let mediaFrame;
+        
+        function openMediaFrame(index) {
+            if (mediaFrame) {
+                mediaFrame.close();
+            }
+            
+            mediaFrame = wp.media({
+                title: 'Выберите изображение герба',
+                button: { text: 'Выбрать' },
+                multiple: false,
+                library: { type: 'image' }
+            });
+            
+            mediaFrame.on('select', function() {
+                var attachment = mediaFrame.state().get('selection').first().toJSON();
+                var container = $('.emblem-item').eq(index);
+                container.find('.emblem-id-' + index).val(attachment.id);
+                container.find('.emblem-preview').html('<img src="' + attachment.url + '" style="max-width:150px; max-height:100px;">');
+            });
+            
+            mediaFrame.open();
+        }
+        
+        $(document).on('click', '.upload-emblem', function(e) {
+            e.preventDefault();
+            openMediaFrame($(this).data('index'));
+        });
+        
+        // Добавление герба
+        let emblemCounter = $('#emblems-sortable .emblem-item').length;
+        
+        $('#add-emblem').click(function() {
+            var index = emblemCounter;
+            var html = '<div class="emblem-item" data-index="' + index + '" style="display:flex; align-items:center; gap:15px; padding:15px; border:1px solid #ddd; background:#f9f9f9; cursor:grab; border-radius:8px;">' +
+                '<span style="cursor:grab; font-size:20px; color:#999;">⠿</span>' +
+                '<div style="flex:1;">' +
+                '<input type="text" name="emblem_titles[]" placeholder="Название герба" style="width:100%; margin-bottom:8px;">' +
+                '<button type="button" class="button upload-emblem" data-index="' + index + '">Выбрать изображение</button>' +
+                '<input type="hidden" name="emblem_ids[]" class="emblem-id-' + index + '" value="">' +
+                '<div class="emblem-preview" style="margin-top:10px;"></div>' +
+                '</div>' +
+                '<button type="button" class="button remove-emblem" style="color:red;">×</button>' +
+                '</div>';
+            $('#emblems-sortable').append(html);
+            emblemCounter++;
+        });
+        
+        // Удаление герба
+        $(document).on('click', '.remove-emblem', function() {
+            if (confirm('Удалить этот герб?')) {
+                $(this).closest('.emblem-item').remove();
+            }
+        });
+    });
+    </script>
+    <?php
+}
+
+// Обновляем функцию сохранения
+function save_about_content_metaboxes($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    if (get_post_type($post_id) !== 'about_content') return;
+    
+    if (isset($_POST['about_content_title'])) {
+        update_post_meta($post_id, '_about_content_title', sanitize_text_field($_POST['about_content_title']));
+    }
+    if (isset($_POST['about_content_text'])) {
+        update_post_meta($post_id, '_about_content_text', sanitize_textarea_field($_POST['about_content_text']));
+    }
+    if (isset($_POST['about_gallery_ids'])) {
+        update_post_meta($post_id, '_about_content_gallery', sanitize_text_field($_POST['about_gallery_ids']));
+    }
+    
+    // Сохраняем гербы как массив
+    if (isset($_POST['emblem_ids']) && isset($_POST['emblem_titles'])) {
+        $emblems = array();
+        foreach ($_POST['emblem_ids'] as $index => $id) {
+            if (!empty($id) || !empty($_POST['emblem_titles'][$index])) {
+                $emblems[] = array(
+                    'id' => intval($id),
+                    'title' => sanitize_text_field($_POST['emblem_titles'][$index]),
+                );
+            }
+        }
+        update_post_meta($post_id, '_about_content_emblems', $emblems);
+    }
+}
+add_action('save_post', 'save_about_content_metaboxes');
