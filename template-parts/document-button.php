@@ -33,7 +33,7 @@ if (empty($documents)) {
                     <a href="<?php echo esc_url($link ?: '#'); ?>" 
                        target="_blank"
                        class="tp-btn tp-btn--primary whitespace-nowrap text-center sm:text-left">
-                        Смотреть документ
+                        Открыть документ
                     </a>
                 </div>
             <?php endforeach; ?>
