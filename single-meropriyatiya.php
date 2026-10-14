@@ -67,7 +67,7 @@ get_header();
         
         <!-- Полное описание -->
         <div class="text-body prose max-w-none mb-12">
-            <?php echo wp_kses_post($full_description); ?>
+            <?php echo $full_description; // уже прошло через the_content; wp_kses_post вырезал iframe ?>
         </div>
         
     <?php endwhile; endif; ?>
