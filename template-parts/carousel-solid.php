@@ -12,8 +12,9 @@ if ($query->have_posts()) {
     while ($query->have_posts()) {
         $query->the_post();
         
+        // Ссылка на картинку (например, превью 3D-тура) важнее картинки из медиатеки
         $image_id = get_post_meta(get_the_ID(), '_slide_image', true);
-        $image_url = $image_id ? wp_get_attachment_url($image_id) : '';
+        $image_url = get_post_meta(get_the_ID(), '_slide_image_url', true) ?: ($image_id ? wp_get_attachment_url($image_id) : '');
         
         $slides[] = [
             'title'       => get_the_title(),

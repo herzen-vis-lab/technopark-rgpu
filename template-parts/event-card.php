@@ -56,17 +56,23 @@ if ($start_raw) {
     }
 }
 
-// Основное фото (первое из галереи)
-$main_image_url = '';
+// Картинка карточки: «Картинка карточки» (featured image), иначе первое фото из галереи
+$main_image_url = get_the_post_thumbnail_url(get_the_ID(), 'large') ?: '';
 $gallery_ids = get_post_meta(get_the_ID(), '_event_gallery', true);
-if (!empty($gallery_ids)) {
+if (!$main_image_url && !empty($gallery_ids)) {
     $ids = explode(',', $gallery_ids);
     $first_id = $ids[0];
     $main_image_url = wp_get_attachment_url($first_id);
 }
 ?>
 
+<?php
+// Для фильтров на странице мероприятий: current / future / past и год начала
+$filter_status = $status === 'ongoing' ? 'current' : ($status === 'coming' ? 'future' : 'past');
+$filter_year = $start_raw ? substr($start_raw, 0, 4) : '';
+?>
 <article class="event-card bg-white rounded-[14px] shadow-custom overflow-hidden flex flex-col h-full hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+         data-status="<?php echo esc_attr($filter_status); ?>" data-year="<?php echo esc_attr($filter_year); ?>"
          onclick="window.location.href='<?php the_permalink(); ?>'">
 
     <div class="relative aspect-[16/9] md:aspect-[5/4] overflow-hidden">
@@ -79,9 +85,9 @@ if (!empty($gallery_ids)) {
         <?php endif; ?>
 
         <?php if ($status === 'coming') : ?>
-            <div class="absolute top-3 left-3 bg-primary text-white text-caption px-3.5 py-1 rounded-3xl font-medium shadow-sm">Скоро</div>
+            <div class="absolute bottom-3 left-3 bg-primary text-white text-caption px-3.5 py-1 rounded-3xl font-medium shadow-sm">Скоро</div>
         <?php elseif ($status === 'ongoing') : ?>
-            <div class="absolute top-3 left-3 bg-black text-white text-caption px-3.5 py-1 rounded-3xl font-medium shadow-sm">Уже идёт</div>
+            <div class="absolute bottom-3 left-3 bg-black text-white text-caption px-3.5 py-1 rounded-3xl font-medium shadow-sm">Уже идёт</div>
         <?php endif; ?>
     </div>
 
@@ -90,6 +96,7 @@ if (!empty($gallery_ids)) {
             <p class="text-small text-black/60 mb-3"><?php echo esc_html($date_text); ?></p>
         <?php endif; ?>
         <h3 class="text-black leading-tight mb-3 mt-2 break-words line-clamp-2"><?php the_title(); ?></h3>
-        <p class="text-small text-black/80 line-clamp-3 flex-1"><?php echo esc_html($short_description); ?></p>
+        <!-- line-clamp не должен растягиваться (flex-1), иначе из-под 3-й строки видна 4-я -->
+        <p class="text-small text-black/80 line-clamp-3"><?php echo esc_html($short_description); ?></p>
     </div>
 </article>

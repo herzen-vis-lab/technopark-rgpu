@@ -584,3 +584,151 @@ button, input, select, textarea {
         min-width: 30px;
     }
 }
+/* Фильтры на странице мероприятий (template-parts/event-section.php): кнопки сайта .tp-btn в одну строку */
+#event-section {
+    padding-top: 0; /* от заголовка до кнопок остаётся только его mb-10 (40px) */
+}
+
+.tp-event-filters {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 48px; /* от кнопок до карточек */
+}
+
+.tp-event-filters .tp-btn {
+    flex-shrink: 0;
+    padding: 0 32px; /* у .tp-btn 80px — пять кнопок в ряд не влезут */
+}
+
+.tp-filter-year {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 48px !important;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364BDE1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 20px center;
+    font-family: inherit;
+}
+
+/* На узких экранах строка не переносится, а листается вбок */
+@media (max-width: 767px) {
+    .tp-event-filters {
+        justify-content: flex-start;
+        gap: 8px;
+        margin-left: -24px;
+        margin-right: -24px;
+        padding: 6px 24px 10px; /* место под тень/подъём при наведении */
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .tp-event-filters::-webkit-scrollbar {
+        display: none;
+    }
+    .tp-event-filters .tp-btn {
+        padding: 0 20px;
+    }
+}
+
+.tp-event-empty {
+    padding: 48px 0;
+    color: rgba(0, 0, 0, 0.6);
+    text-align: center;
+}
+
+/* Видео из шорткода [vk_video] (плагин RUS Video Embeds): плагин задаёт iframe height:auto + aspect-ratio,
+   а Safari/iOS это не поддерживает и рисует iframe высотой 150px. Растягиваем на всю рамку 16:9 плагина. */
+.rve-wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* «Как добраться» (template-parts/how-to-get.php): карта слева, адрес справа */
+.tp-how-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
+.tp-how-map {
+    min-height: 450px;
+    overflow: hidden;
+    border-radius: 24px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+.tp-how-map iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 450px;
+    border: 0;
+}
+
+.tp-how-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    padding: 8px 0 8px 16px;
+}
+
+.tp-how-link {
+    display: inline-block;
+    text-decoration: none;
+    transition: color 200ms ease;
+}
+
+.tp-how-link:hover {
+    color: var(--color-primary, #64BDE1);
+}
+
+.tp-how-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.tp-how-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--color-primary, #64BDE1);
+    color: #ffffff;
+}
+
+.tp-how-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.tp-how-label {
+    margin: 0 0 4px;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.tp-how-text {
+    margin: 0;
+    color: #000000;
+}
+
+@media (max-width: 1023px) {
+    .tp-how-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .tp-how-map,
+    .tp-how-map iframe {
+        min-height: 380px;
+    }
+    .tp-how-info {
+        padding: 8px 0 0;
+        gap: 20px;
+    }
+}

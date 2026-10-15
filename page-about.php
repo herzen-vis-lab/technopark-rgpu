@@ -35,6 +35,8 @@ $emblem_3_id = get_post_meta($about_id, '_about_content_emblem_3', true);
     <?php get_template_part('template-parts/carousel-solid'); ?>
     <?php get_template_part('template-parts/document-button'); ?>  
     <?php get_template_part('template-parts/team-carousel'); ?>
+
+    <?php get_template_part('template-parts/how-to-get'); ?>
     
     <!-- ГЕРБЫ -->
     <?php if (!empty($emblem_1_id) || !empty($emblem_2_id) || !empty($emblem_3_id)) : ?>

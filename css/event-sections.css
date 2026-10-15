@@ -1,0 +1,649 @@
+/* Секции страницы мероприятия (inc/event-sections.php) */
+
+html {
+    scroll-behavior: smooth;
+}
+
+.tp-es-back {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 32px 24px 0;
+}
+
+.tp-es {
+    padding: 48px 0;
+    scroll-margin-top: 110px; /* под липкой шапкой */
+}
+
+.tp-es-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.tp-es-title {
+    margin: 0 0 32px;
+    color: inherit;
+    font-size: var(--font-size-h2, clamp(1.375rem, 4.5vw, 2.25rem));
+    line-height: 1.2;
+    font-weight: 400;
+}
+
+.tp-es-title--center { text-align: center; }
+.tp-es-title--left   { text-align: left; }
+.tp-es-title--right  { text-align: right; }
+
+.tp-es p {
+    margin: 0;
+}
+
+.tp-es .tp-btn {
+    padding: 0 40px;
+}
+
+.tp-es .tp-btn--outline {
+    color: inherit;
+}
+
+.tp-es-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.tp-es-buttons--center {
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    .tp-es {
+        padding: 32px 0;
+    }
+    .tp-es-inner,
+    .tp-es-back {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .tp-es-buttons:not(.tp-es-buttons--center) .tp-btn {
+        flex: 1 1 100%;
+    }
+}
+
+/* ---------- 1. Обложка ---------- */
+
+.tp-es-cover {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    background: #e5e7eb;
+}
+
+.tp-es-cover--s { height: clamp(140px, 20vw, 260px); }
+.tp-es-cover--m { height: clamp(180px, 30vw, 400px); }
+.tp-es-cover--l { height: clamp(240px, 42vw, 560px); }
+
+.tp-es-cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tp-es-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.tp-es-cover-text {
+    position: relative;
+    max-width: 90%;
+    padding: 24px;
+    font-size: clamp(1.5rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.tp-es-cover--bottom-left {
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+
+.tp-es-cover--bottom-left .tp-es-cover-text {
+    text-align: left;
+    padding: clamp(16px, 4vw, 48px);
+}
+
+/* ---------- 2. Hero ---------- */
+
+.tp-es-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+}
+
+.tp-es-hero--no-image {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.tp-es-hero-title {
+    margin: 0;
+    color: inherit;
+    font-size: var(--font-size-h1, clamp(1.75rem, 5vw, 3rem));
+    line-height: 1.15;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.tp-es-hero-dates {
+    margin-top: 12px !important;
+    opacity: 0.6;
+}
+
+.tp-es-hero-text {
+    margin-top: 20px;
+}
+
+.tp-es-hero-text p + p,
+.tp-es-feature-text p + p,
+.tp-faq-content-inner p + p {
+    margin-top: 0.75em;
+}
+
+.tp-es-hero .tp-es-buttons {
+    margin-top: 32px;
+}
+
+.tp-es-hero-media img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 767px) {
+    .tp-es-hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+    }
+}
+
+/* ---------- 3. Карточки ---------- */
+
+.tp-es-cards {
+    display: grid;
+    gap: 24px;
+}
+
+.tp-es-cards--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tp-es-cards--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tp-es-cards--6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+@media (max-width: 1023px) {
+    .tp-es-cards--6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 767px) {
+    .tp-es-cards { gap: 12px; }
+    .tp-es-cards--3 { gap: 8px; }
+    .tp-es-cards--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 639px) {
+    .tp-es-cards--6 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Псевдоэлемент задаёт минимальную высоту (квадрат), а длинный текст растягивает карточку, а не обрезается */
+.tp-es-card {
+    display: flex;
+    border-radius: 14px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    container-type: inline-size;
+}
+
+.tp-es-card::before {
+    content: "";
+    flex: 0 0 0;
+    padding-bottom: 100%;
+}
+
+@media (max-width: 639px) {
+    .tp-es-cards--6 .tp-es-card::before { padding-bottom: 50%; }
+    .tp-es-cards--3 .tp-es-card { border-radius: 10px; }
+}
+
+.tp-es-card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6cqi;
+    padding: clamp(8px, 9cqi, 32px);
+}
+
+.tp-es-card-title,
+.tp-es-card-caption {
+    overflow-wrap: anywhere;
+}
+
+/* Иконка сверху, надпись прижата слева снизу */
+.tp-es-cards--bottom-left .tp-es-card-body {
+    justify-content: space-between;
+}
+
+.tp-es-cards--bottom-left .tp-es-card-text {
+    margin-top: auto;
+}
+
+.tp-es-cards--bottom-left .tp-es-card-title {
+    font-size: clamp(0.7rem, 9cqi, 1.75rem);
+    line-height: 1.2;
+    font-weight: 500;
+}
+
+.tp-es-cards--bottom-left .tp-es-card-caption {
+    margin-top: 0.4em;
+    font-size: clamp(0.6rem, 6.5cqi, 1.125rem);
+    line-height: 1.3;
+    opacity: 0.85;
+}
+
+/* Крупный текст по центру и подпись под ним */
+.tp-es-cards--center .tp-es-card-body {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.tp-es-cards--center .tp-es-card-title {
+    font-size: clamp(1rem, 20cqi, 4.5rem);
+    line-height: 1;
+    font-weight: 700;
+}
+
+.tp-es-cards--center .tp-es-card-caption {
+    margin-top: 0.5em;
+    font-size: clamp(0.6rem, 7cqi, 1.25rem);
+    line-height: 1.3;
+}
+
+.tp-es-card-icon-wrap {
+    display: flex;
+}
+
+.tp-es-card-icon {
+    display: block;
+    width: clamp(20px, 22cqi, 72px);
+    height: clamp(20px, 22cqi, 72px);
+    flex-shrink: 0;
+}
+
+.tp-es-cards--6 .tp-es-card-icon {
+    width: clamp(28px, 16cqi, 64px);
+    height: clamp(28px, 16cqi, 64px);
+}
+
+.tp-es-icon-img {
+    object-fit: cover;
+}
+
+.tp-es-radius-none    { border-radius: 0; }
+.tp-es-radius-rounded { border-radius: 22%; }
+.tp-es-radius-circle  { border-radius: 50%; }
+
+/* ---------- 4. Иконки ---------- */
+
+.tp-es-features {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.tp-es-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.tp-es-feature--right {
+    margin-left: auto;
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+.tp-es-feature-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.tp-es-feature-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.tp-es-feature-badge--image .tp-es-feature-icon {
+    width: 100%;
+    height: 100%;
+}
+
+.tp-es-feature-body {
+    min-width: 0;
+    padding-top: 4px;
+}
+
+.tp-es-feature-title {
+    margin: 0;
+    color: inherit;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.tp-es-feature-text {
+    margin-top: 6px;
+    opacity: 0.85;
+}
+
+@media (max-width: 767px) {
+    .tp-es-feature,
+    .tp-es-feature--right {
+        max-width: none;
+        margin-left: 0;
+        flex-direction: row;
+        text-align: left;
+    }
+    .tp-es-feature-badge {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+    }
+    .tp-es-feature-icon {
+        width: 26px;
+        height: 26px;
+    }
+    .tp-es-title--right {
+        text-align: left;
+    }
+}
+
+/* ---------- 5. Яндекс Форма ---------- */
+
+.tp-es-form {
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+.tp-es-form iframe {
+    display: block;
+    width: 100%;
+    border: 0;
+}
+
+/* ---------- 7. Вопросы и ответы ---------- */
+
+.tp-es-faq {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: #000000;
+}
+
+.tp-es-faq-heading {
+    margin: 0;
+    font-size: inherit;
+}
+
+.tp-es-faq .tp-faq-trigger {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* ---------- 8. Партнёры ---------- */
+
+/*
+ * --tp-es-logo-h   базовая высота логотипа
+ * --tp-es-scale    масштаб конкретного логотипа (1 = 100%)
+ * --tp-es-row-scale самый крупный масштаб в секции → высота ячеек
+ * Картинка вписывается в рамку целиком (object-fit: contain) — не обрезается и не искажается.
+ */
+.tp-es-partners {
+    --tp-es-h: var(--tp-es-logo-h, 90px);
+    display: grid;
+    grid-template-columns: repeat(var(--tp-es-per-row, 5), minmax(0, 1fr));
+    gap: 32px;
+    align-items: center;
+}
+
+.tp-es-partner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    height: calc(var(--tp-es-h) * var(--tp-es-row-scale, 1));
+}
+
+.tp-es-partner-box {
+    display: block;
+    /* рамка логотипа: ширина ячейки = самый крупный масштаб, остальные пропорционально меньше */
+    width: calc(100% * var(--tp-es-scale, 1) / var(--tp-es-row-scale, 1));
+    height: calc(var(--tp-es-h) * var(--tp-es-scale, 1));
+}
+
+.tp-es-partner-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* вписывается целиком: без обрезки и искажений */
+}
+
+.tp-es-partners--tiles {
+    gap: 16px;
+}
+
+.tp-es-partners--tiles .tp-es-partner {
+    box-sizing: content-box;
+    padding: 20px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+a.tp-es-partner {
+    transition: transform 200ms ease;
+}
+
+a.tp-es-partner:hover {
+    transform: translateY(-2px);
+}
+
+@media (max-width: 767px) {
+    .tp-es-partners {
+        --tp-es-h: min(var(--tp-es-logo-h, 90px), 120px);
+        grid-template-columns: repeat(var(--tp-es-per-row-mobile, 2), minmax(0, 1fr));
+        gap: 20px;
+    }
+    .tp-es-partners--tiles .tp-es-partner {
+        padding: 12px;
+    }
+}
+
+/* ---------- 9. Слайдер ---------- */
+
+.tp-es-slider-viewport {
+    position: relative;
+}
+
+.tp-es-slider-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tp-es-slider-track::-webkit-scrollbar {
+    display: none;
+}
+
+.tp-es-slide {
+    flex: 0 0 calc((100% - (var(--tp-es-per-view, 1) - 1) * 16px) / var(--tp-es-per-view, 1));
+    margin: 0;
+    scroll-snap-align: start;
+}
+
+@media (max-width: 767px) {
+    .tp-es-slide {
+        flex-basis: 100%;
+    }
+}
+
+.tp-es-slide-media {
+    aspect-ratio: var(--tp-es-ratio, 16 / 9);
+    overflow: hidden;
+    border-radius: 20px;
+    background: #000000;
+}
+
+.tp-es-slide-media img,
+.tp-es-slide-media video,
+.tp-es-slide-media iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+}
+
+.tp-es-slide-media video {
+    object-fit: contain;
+}
+
+.tp-es-slide-caption {
+    margin-top: 10px;
+    opacity: 0.75;
+}
+
+.tp-es-slider-arrow {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: opacity 200ms ease;
+}
+
+.tp-es-slider-arrow svg {
+    width: 22px;
+    height: 22px;
+}
+
+.tp-es-slider-arrow--prev { left: 12px; }
+.tp-es-slider-arrow--next { right: 12px; }
+
+.tp-es-slider-arrow:disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tp-es-slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.tp-es-slider-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: currentColor;
+    opacity: 0.25;
+    cursor: pointer;
+    transition: width 200ms ease, opacity 200ms ease;
+}
+
+.tp-es-slider-dot.is-active {
+    width: 24px;
+    opacity: 1;
+    background: var(--color-primary, #64BDE1);
+}
+
+@media (max-width: 767px) {
+    .tp-es-slider-arrow {
+        display: none;
+    }
+}
+
+/* ---------- 10. Свободная секция ---------- */
+
+.tp-es-free--narrow {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.tp-es-free > * + * {
+    margin-top: 1em;
+}
+
+.tp-es-free img,
+.tp-es-free video {
+    max-width: 100%;
+    height: auto;
+}
+
+.tp-es-free iframe {
+    max-width: 100%;
+}
+
+/* Видео растягиваем на всю ширину колонки (атрибуты width/height из кода вставки не мешают) */
+.tp-es-free iframe[src*="video_ext.php"],
+.tp-es-free iframe[src*="vkvideo.ru"],
+.tp-es-free iframe[src*="youtube.com"],
+.tp-es-free iframe[src*="youtube-nocookie.com"],
+.tp-es-free iframe[src*="rutube.ru"] {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: 20px;
+}
+
+.tp-es-free a {
+    color: var(--color-primary, #64BDE1);
+}

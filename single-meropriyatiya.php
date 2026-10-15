@@ -4,6 +4,23 @@
  */
 
 get_header();
+
+// Новый вид: страница собрана из секций (inc/event-sections.php)
+if (have_posts() && tp_es_get_sections(get_queried_object_id())) :
+    the_post();
+    ?>
+    <main class="tp-es-page">
+        <div class="tp-es-back">
+            <a href="<?php echo home_url('/event/'); ?>" class="text-primary text-body" style="text-decoration: none;">
+                ← Все мероприятия
+            </a>
+        </div>
+        <?php tp_es_render_sections(get_the_ID()); ?>
+    </main>
+    <?php
+    get_footer();
+    return;
+endif;
 ?>
 
 <main class="max-w-7xl mx-auto px-6 py-12">

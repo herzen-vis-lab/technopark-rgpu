@@ -41,7 +41,7 @@ $secondary_button_link = $button_2_link ?: home_url('/event/');
 
         <div class="absolute inset-0 bg-black/70"></div>
 
-        <div class="relative z-10 flex items-center justify-center p-6 md:p-10 lg:p-12 min-h-[500px] md:min-h-[550px] lg:min-h-[592px]">
+        <div class="relative z-10 flex items-center justify-start p-6 md:p-10 lg:p-12 pl-10 md:pl-16 lg:pl-20 min-h-[500px] md:min-h-[550px] lg:min-h-[592px]">
             <div class="w-full max-w-[90%] md:max-w-[70%] lg:max-w-[520px] text-white text-left">
                 <!-- ↑ убрал text-center, оставил только text-left -->
                 
@@ -53,8 +53,8 @@ $secondary_button_link = $button_2_link ?: home_url('/event/');
                     <p class="mt-4 text-body tp-hero-subtitle break-words"><?php echo wp_kses_post(nl2br(esc_html($hero_text))); ?></p>
                 <?php endif; ?>
 
-                <!-- Кнопки: центрируем на мобилках, слева на десктопе -->
-                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center sm:justify-start">
+                <!-- Кнопки: всегда слева -->
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-start">
                     <a href="<?php echo esc_url($primary_button_link); ?>" class="tp-btn tp-btn--primary text-body text-center">
                         <?php echo esc_html($primary_button_text); ?>
                     </a>

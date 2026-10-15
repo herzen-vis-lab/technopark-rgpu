@@ -6,20 +6,20 @@
 
 // ==================== ОБЩИЕ ФУНКЦИИ ====================
 
-// Основная функция подключения ассетов
-function technopark_enqueue_assets() {
-    wp_enqueue_style(
-        'windpress-main',
-        content_url('/uploads/windpress/data/main.css'),
-        array(),
-        '1.0.0'
-    );
+// Конструктор секций страницы мероприятия
+require_once get_stylesheet_directory() . '/inc/event-sections.php';
 
+// Режим WindPress и сканирование шаблонов темы для его кэша
+require_once get_stylesheet_directory() . '/inc/windpress.php';
+
+// Основная функция подключения ассетов
+// (main.css WindPress — исходник Tailwind, а не готовый CSS: его подключает сам WindPress)
+function technopark_enqueue_assets() {
     wp_enqueue_style(
         'technopark-style',
         get_stylesheet_uri(),
-        array('windpress-main'),
-        '1.0.3'
+        array(),
+        '1.0.12'
     );
 
     wp_enqueue_script(
@@ -140,6 +140,7 @@ add_action('add_meta_boxes', 'add_carousel_metaboxes');
 function render_carousel_image($post) {
     $image_id = get_post_meta($post->ID, '_slide_image', true);
     $image_url = $image_id ? wp_get_attachment_url($image_id) : '';
+    $image_ext_url = get_post_meta($post->ID, '_slide_image_url', true);
     ?>
     <button type="button" class="button" id="upload_carousel_image">Выбрать изображение</button>
     <input type="hidden" id="carousel_image_id" name="carousel_image_id" value="<?php echo esc_attr($image_id); ?>">
@@ -148,6 +149,13 @@ function render_carousel_image($post) {
             <img src="<?php echo esc_url($image_url); ?>" style="max-width:300px;">
         <?php endif; ?>
     </div>
+    <p style="margin-top:15px;">
+        <label for="carousel_image_url"><strong>Или ссылка на картинку</strong> (если заполнена — используется вместо выбранной выше)</label><br>
+        <input type="url" id="carousel_image_url" name="carousel_image_url" value="<?php echo esc_attr($image_ext_url); ?>" placeholder="https://…/thumbnail.jpg" style="width:100%">
+    </p>
+    <?php if ($image_ext_url) : ?>
+        <img src="<?php echo esc_url($image_ext_url); ?>" style="max-width:300px;">
+    <?php endif; ?>
     <script>
     jQuery(document).ready(function($) {
         $('#upload_carousel_image').click(function(e) {
@@ -197,6 +205,9 @@ function save_carousel_metaboxes($post_id) {
     if (isset($_POST['carousel_image_id'])) {
         update_post_meta($post_id, '_slide_image', intval($_POST['carousel_image_id']));
     }
+    if (isset($_POST['carousel_image_url'])) {
+        update_post_meta($post_id, '_slide_image_url', esc_url_raw(trim($_POST['carousel_image_url'])));
+    }
     
     $fields = ['button1_text', 'button1_link', 'button1_style', 'button2_text', 'button2_link', 'button2_style'];
     foreach ($fields as $field) {
@@ -206,6 +217,88 @@ function save_carousel_metaboxes($post_id) {
     }
 }
 add_action('save_post', 'save_carousel_metaboxes');
+
+// Блок «Как добраться» (карта + адрес) в любом месте контента: [tp_how_to_get] или [tp_how_to_get title=""]
+add_shortcode('tp_how_to_get', function ($atts) {
+    $atts = shortcode_atts(array('title' => 'Как добраться'), $atts);
+    ob_start();
+    get_template_part('template-parts/how-to-get', null, array('title' => $atts['title']));
+    return ob_get_clean();
+});
+
+// Разово: убрать Telegram из соцсетей футера (остаётся ВКонтакте)
+function technopark_remove_footer_telegram_once() {
+    if (get_option('technopark_footer_telegram_removed')) return;
+    foreach (get_posts(array('post_type' => 'footer_settings', 'posts_per_page' => -1, 'post_status' => 'any')) as $footer) {
+        $socials = get_post_meta($footer->ID, '_footer_socials', true);
+        if (!is_array($socials)) continue;
+        $kept = array_values(array_filter($socials, function ($social) {
+            $host = strtolower((string) parse_url($social['link'] ?? '', PHP_URL_HOST));
+            return !in_array(preg_replace('/^www\./', '', $host), array('t.me', 'telegram.me', 'telegram.org'), true);
+        }));
+        if (count($kept) !== count($socials)) {
+            update_post_meta($footer->ID, '_footer_socials', $kept);
+        }
+    }
+    update_option('technopark_footer_telegram_removed', 1);
+}
+add_action('init', 'technopark_remove_footer_telegram_once', 20);
+
+// Разово: на странице «Как пройти в Кванториум» сверху блок «карта + адрес», схема остаётся ниже
+function technopark_add_how_to_get_once() {
+    if (get_option('technopark_how_to_get_added')) return;
+    $page = get_page_by_path('как-пройти-в-кванториум');
+    if ($page && strpos($page->post_content, 'tp_how_to_get') === false) {
+        wp_update_post(array(
+            'ID'           => $page->ID,
+            'post_content' => "<!-- wp:shortcode -->\n[tp_how_to_get title=\"\"]\n<!-- /wp:shortcode -->\n\n" . $page->post_content,
+        ));
+    }
+    update_option('technopark_how_to_get_added', 1);
+}
+add_action('init', 'technopark_add_how_to_get_once', 20);
+
+// Разово: 3D-туры на странице «О нас» переезжают в Yandex Cloud, плюс карточка «Другие туры университета».
+// Ссылки меняются только у слайдов со старыми адресами туров; карточка создаётся, только если её ещё нет.
+function technopark_update_tour_slides_once() {
+    if (get_option('technopark_tour_slides_updated')) return;
+    $bucket = 'https://technopark-herzen-map-bucket.storage.yandexcloud.net/';
+    $moves = array(
+        'webxdesign.ru/360/yadro' => 'yadro_tehnoparka',
+        'stilevizor.ru/quant'     => 'quant',
+    );
+
+    foreach (get_posts(array('post_type' => 'carousel', 'posts_per_page' => -1, 'post_status' => 'any')) as $slide) {
+        $link = (string) get_post_meta($slide->ID, '_button1_link', true);
+        foreach ($moves as $old => $tour) {
+            if (strpos($link, $old) !== false) {
+                update_post_meta($slide->ID, '_button1_link', $bucket . $tour . '/index.html');
+                update_post_meta($slide->ID, '_slide_image_url', $bucket . $tour . '/indexdata/thumbnail.jpg');
+            }
+        }
+    }
+
+    if (!get_posts(array('post_type' => 'carousel', 'title' => 'Другие туры университета', 'post_status' => 'any', 'posts_per_page' => 1))) {
+        $id = wp_insert_post(array(
+            'post_type'    => 'carousel',
+            'post_status'  => 'publish',
+            'post_title'   => 'Другие туры университета',
+            'post_excerpt' => 'Исследуйте РГПУ им. А.И. Герцена',
+            'menu_order'   => 10, // после «Ядра» и «Кванториума»
+        ));
+        if ($id && !is_wp_error($id)) {
+            update_post_meta($id, '_slide_image_url', 'https://collections.herzen.spb.ru/preview.png');
+            update_post_meta($id, '_button1_text', 'Сайт коллекций');
+            update_post_meta($id, '_button1_link', 'https://collections.herzen.spb.ru/tours');
+            update_post_meta($id, '_button1_style', 'primary'); // белая
+            update_post_meta($id, '_button2_text', 'Карта университета');
+            update_post_meta($id, '_button2_link', 'https://map.herzen.spb.ru');
+            update_post_meta($id, '_button2_style', 'outline'); // голубая с белой рамкой
+        }
+    }
+    update_option('technopark_tour_slides_updated', 1);
+}
+add_action('init', 'technopark_update_tour_slides_once', 20);
 
 // Подключаем медиафайлы для карусели
 function enqueue_media_for_carousel() {
@@ -290,6 +383,19 @@ function create_team_post_type() {
 
 
 add_action('init', 'create_team_post_type');
+
+// Без поддержки темы поле «Изображение записи» (фото сотрудника) не показывается в админке
+add_action('after_setup_theme', function () {
+    add_theme_support('post-thumbnails', array('team'));
+}, 11);
+
+add_filter('post_type_labels_team', function ($labels) {
+    $labels->featured_image        = 'Фото сотрудника';
+    $labels->set_featured_image    = 'Выбрать фото';
+    $labels->remove_featured_image = 'Убрать фото';
+    $labels->use_featured_image    = 'Использовать как фото';
+    return $labels;
+});
 
 
 // ==================== МЕРОПРИЯТИЯ ====================
@@ -493,7 +599,7 @@ function render_about_content_emblems($post) {
         $emblem_url = $emblem_id ? wp_get_attachment_url($emblem_id) : '';
         ?>
         <div style="margin-bottom:20px; padding:10px; border:1px solid #ddd;">
-            <h4>Герб <?php echo $i; ?></h4>
+            <h4>Герб <?php echo $i; ?> <?php echo array(1 => '(слева)', 2 => '(по центру)', 3 => '(справа)')[$i]; ?></h4>
             <button type="button" class="button upload-emblem" data-num="<?php echo $i; ?>">Выбрать изображение</button>
             <input type="hidden" name="about_content_emblem_<?php echo $i; ?>" id="about_content_emblem_<?php echo $i; ?>_id" value="<?php echo esc_attr($emblem_id); ?>">
             <div id="about_content_emblem_<?php echo $i; ?>_preview" style="margin-top:10px;">
@@ -544,6 +650,29 @@ function save_about_content_metaboxes($post_id) {
     }
 }
 add_action('save_post', 'save_about_content_metaboxes');
+
+// Разово: гербы в порядке Минпросвещения → РГПУ им. Герцена → Правительство СПб.
+// Срабатывает только при старой раскладке (Правительство, Минпрос, Герцен), иначе ничего не трогает.
+function technopark_reorder_about_emblems_once() {
+    if (get_option('technopark_emblems_reordered')) return;
+
+    foreach (get_posts(array('post_type' => 'about_content', 'posts_per_page' => -1)) as $about) {
+        $ids = array();
+        $files = array();
+        for ($i = 1; $i <= 3; $i++) {
+            $ids[$i] = (int) get_post_meta($about->ID, '_about_content_emblem_' . $i, true);
+            $files[$i] = $ids[$i] ? basename((string) get_attached_file($ids[$i])) : '';
+        }
+        // image-30 — Правительство СПб, image-29 — Минпросвещения, image-31 — РГПУ им. Герцена
+        if ($files[1] === 'image-30.png' && $files[2] === 'image-29.png' && $files[3] === 'image-31.png') {
+            update_post_meta($about->ID, '_about_content_emblem_1', $ids[2]);
+            update_post_meta($about->ID, '_about_content_emblem_2', $ids[3]);
+            update_post_meta($about->ID, '_about_content_emblem_3', $ids[1]);
+        }
+    }
+    update_option('technopark_emblems_reordered', 1);
+}
+add_action('init', 'technopark_reorder_about_emblems_once', 20);
 
 function enqueue_media_for_about_content() {
     global $pagenow, $post;
@@ -1693,7 +1822,8 @@ function render_footer_socials($post) {
     echo '<div id="footer-socials-wrap">';
     foreach ($socials as $index => $social) {
         echo '<div class="footer-social-item" style="margin-bottom:15px;padding:10px;border:1px solid #ddd;">';
-        echo '<input type="url" name="footer_socials['.$index.'][link]" value="'.esc_attr($social['link']).'" placeholder="Ссылка" style="width:40%"><br>';
+        echo '<input type="url" name="footer_socials['.$index.'][link]" value="'.esc_attr($social['link']).'" placeholder="Ссылка" style="width:40%"> ';
+        echo '<input type="text" name="footer_socials['.$index.'][title]" value="'.esc_attr($social['title'] ?? '').'" placeholder="Подпись (необязательно: Telegram, ВКонтакте… определяются сами)" style="width:55%"><br>';
         echo '<textarea name="footer_socials['.$index.'][icon]" rows="3" placeholder="Вставьте SVG-код иконки" style="width:100%">'.esc_textarea($social['icon']).'</textarea>';
         echo '<p class="description"><strong>Где взять SVG?</strong> Бесплатные сайты <a href="https://svg4.ru/" target="_blank">SVG4</a>, <a href="https://heroicons.com/" target="_blank">Heroicons</a>. Скопируйте код и вставьте сюда.</p>' ;
         echo '<button type="button" class="remove-social button">Удалить</button>';
@@ -1706,7 +1836,8 @@ function render_footer_socials($post) {
         $('#add-social').click(function() {
             var index = $('.footer-social-item').length;
             var html = '<div class="footer-social-item" style="margin-bottom:15px;padding:10px;border:1px solid #ddd;">' +
-                '<input type="url" name="footer_socials['+index+'][link]" placeholder="Ссылка" style="width:40%"><br>' +
+                '<input type="url" name="footer_socials['+index+'][link]" placeholder="Ссылка" style="width:40%"> ' +
+                '<input type="text" name="footer_socials['+index+'][title]" placeholder="Подпись (необязательно: Telegram, ВКонтакте… определяются сами)" style="width:55%"><br>' +
                 '<textarea name="footer_socials['+index+'][icon]" rows="3" placeholder="Вставьте SVG-код иконки" style="width:100%"></textarea>' +
                 '<p class="description"><strong>Где взять SVG?</strong> Бесплатные сайты <a href="https://svg4.ru/" target="_blank">SVG4</a>, <a href="https://heroicons.com/" target="_blank">Heroicons</a>. Скопируйте код и вставьте сюда.</p>' ;
                 '<button type="button" class="remove-social button">Удалить</button></div>';

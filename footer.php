@@ -33,19 +33,21 @@ $socials = get_post_meta($settings_id, '_footer_socials', true) ?: [];
 
                 <div class="mt-4 flex flex-col items-center gap-3 md:items-end">
                     <?php foreach ($socials as $social) : 
-                        $social_name = '';
-                        if (strpos($social['link'], 'vk.com') !== false) {
-                            $social_name = 'ВКонтакте';
-                        } elseif (strpos($social['link'], 'telegram') !== false) {
-                            $social_name = 'Telegram';
-                        } elseif (strpos($social['link'], 'youtube.com') !== false) {
-                            $social_name = 'YouTube';
-                        } elseif (strpos($social['link'], 'ok.ru') !== false) {
-                            $social_name = 'Одноклассники';
+                        // Подпись: заданная в админке, иначе по домену ссылки
+                        $host = strtolower((string) parse_url($social['link'], PHP_URL_HOST));
+                        $host = preg_replace('/^www\./', '', $host);
+                        $known = array(
+                            't.me' => 'Telegram', 'telegram.me' => 'Telegram', 'telegram.org' => 'Telegram',
+                            'vk.com' => 'ВКонтакте', 'vk.ru' => 'ВКонтакте', 'm.vk.com' => 'ВКонтакте', 'vkvideo.ru' => 'ВКонтакте',
+                            'youtube.com' => 'YouTube', 'youtu.be' => 'YouTube',
+                            'ok.ru' => 'Одноклассники', 'rutube.ru' => 'Rutube', 'dzen.ru' => 'Дзен',
+                        );
+                        if (!empty($social['title'])) {
+                            $social_name = $social['title'];
                         } else {
-                            $social_name = $social['title'] ?? 'Социальная сеть';
+                            $social_name = isset($known[$host]) ? $known[$host] : 'Социальная сеть';
                         }
-                        
+
                         $svg = $social['icon'];
                         $svg = preg_replace('/width="[^"]+"/', 'width="24"', $svg);
                         $svg = preg_replace('/height="[^"]+"/', 'height="24"', $svg);

@@ -17,7 +17,7 @@ if ($query->have_posts()) {
         $team_items[] = [
             'name'     => get_the_title(),
             'position' => get_the_excerpt() ?: 'Преподаватель',
-            'photo'    => $photo ?: 'https://via.placeholder.com/120',
+            'photo'    => $photo ?: '',
         ];
     }
 } else {
@@ -45,9 +45,17 @@ wp_reset_postdata();
                     <div class="swiper-slide h-auto overflow-visible">
                         <div class="bg-white rounded-[14px] p-6 shadow-custom flex flex-col items-center text-center h-full">
                             <div class="w-[110px] h-[110px] md:w-[120px] md:h-[120px] rounded-full overflow-hidden border-4 border-white shadow-sm mb-6 flex-shrink-0">
-                                <img src="<?php echo esc_url($member['photo']); ?>" 
-                                     alt="<?php echo esc_attr($member['name']); ?>"
-                                     class="w-full h-full object-cover">
+                                <?php if ($member['photo']) : ?>
+                                    <img src="<?php echo esc_url($member['photo']); ?>" 
+                                         alt="<?php echo esc_attr($member['name']); ?>"
+                                         class="w-full h-full object-cover">
+                                <?php else :
+                                    // Нет фото — инициалы (фамилия + имя)
+                                    $words = preg_split('/\s+/u', trim($member['name']));
+                                    $initials = mb_strtoupper(mb_substr($words[0] ?? '', 0, 1) . mb_substr($words[1] ?? '', 0, 1));
+                                    ?>
+                                    <div class="w-full h-full bg-primary text-white flex items-center justify-center text-h3" aria-hidden="true"><?php echo esc_html($initials); ?></div>
+                                <?php endif; ?>
                             </div>
                             <p class="text-body font-medium text-black mb-2">
                                 <?php echo esc_html($member['name']); ?>

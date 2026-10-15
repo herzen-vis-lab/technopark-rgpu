@@ -27,8 +27,17 @@ if (empty($kop_title)) {
         </div>
     <?php endif; ?>
     
-    <!-- Секция проектов -->
-    <?php get_template_part('template-parts/projects-section'); ?>
+    <!-- Каталог КОП с сайта коллекций (коллекция kop на collections.herzen.spb.ru).
+         embed.js подгоняет высоту iframe под содержимое; height="450" — запасная высота без скрипта.
+         Прежняя сетка работ из админки: get_template_part('template-parts/projects-section') -->
+    <?php $collections_url = defined('TP_COLLECTIONS_URL') ? TP_COLLECTIONS_URL : 'https://collections.herzen.spb.ru'; ?>
+    <div class="mt-8 rounded-3xl shadow-custom overflow-hidden">
+        <iframe src="<?php echo esc_url($collections_url . '/catalog?collection=kop&show_desc=0&embed=1'); ?>"
+                title="Коробочные образовательные продукты — виртуальные коллекции РГПУ"
+                width="100%" height="450" style="display: block; width: 100%; height: 450px; border: 0;"
+                allow="fullscreen" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <script src="<?php echo esc_url($collections_url . '/embed.js'); ?>" async></script>
 </main>
 
 <?php get_footer(); ?>
