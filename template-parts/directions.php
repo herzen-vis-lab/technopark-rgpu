@@ -68,7 +68,7 @@ wp_reset_postdata();
                     <?php foreach ($item['buttons'] as $button) : ?>
                         <?php if (!empty($button['text']) && !empty($button['link'])) : ?>
                             <?php $btn_class = ($button['style'] === 'primary') ? 'tp-btn tp-btn--primary text-body' : 'tp-btn tp-btn--outline text-body'; ?>
-                            <a href="<?php echo esc_url($button['link']); ?>" class="<?php echo esc_attr($btn_class); ?>">
+                            <a href="<?php echo esc_url(technopark_button_url($button['link'])); ?>" class="<?php echo esc_attr($btn_class); ?>">
                                 <?php echo esc_html($button['text']); ?>
                             </a>
                         <?php endif; ?>

@@ -68,12 +68,12 @@ wp_reset_postdata();
                                 $btn1 = $slide['button1'];
                                 $btn2 = $slide['button2'];
                                 ?>
-                                <a href="<?php echo esc_url($btn1['link']); ?>" 
+                                <a href="<?php echo esc_url(technopark_button_url($btn1['link'])); ?>" 
                                 class="tp-btn <?php echo $btn1['type'] === 'primary' ? 'tp-btn--white' : 'tp-btn--outline-light'; ?>">
                                     <?php echo esc_html($btn1['text']); ?>
                                 </a>
                                 
-                                <a href="<?php echo esc_url($btn2['link']); ?>" 
+                                <a href="<?php echo esc_url(technopark_button_url($btn2['link'])); ?>" 
                                 class="tp-btn <?php echo $btn2['type'] === 'primary' ? 'tp-btn--white' : 'tp-btn--outline-light'; ?>">
                                     <?php echo esc_html($btn2['text']); ?>
                                 </a>

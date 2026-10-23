@@ -15,11 +15,13 @@ require_once get_stylesheet_directory() . '/inc/windpress.php';
 // Основная функция подключения ассетов
 // (main.css WindPress — исходник Tailwind, а не готовый CSS: его подключает сам WindPress)
 function technopark_enqueue_assets() {
+    // css/style.css напрямую, а не через @import из style.css: у @import нет версии,
+    // и браузер держал старый файл в кэше (сервер отдаёт CSS с max-age на год)
     wp_enqueue_style(
         'technopark-style',
-        get_stylesheet_uri(),
+        get_stylesheet_directory_uri() . '/css/style.css',
         array(),
-        '1.0.12'
+        filemtime(get_stylesheet_directory() . '/css/style.css')
     );
 
     wp_enqueue_script(
@@ -31,6 +33,28 @@ function technopark_enqueue_assets() {
     );
 }
 add_action('wp_enqueue_scripts', 'technopark_enqueue_assets');
+
+// Адрес для кнопки-ссылки. Яндекс Форма с ?iframe=1 — это версия для встраивания в рамку
+// (без оформления страницы); открытая по кнопке как отдельная страница, она выглядит сломанной.
+function technopark_button_url($url) {
+    $url = trim((string) $url);
+    if ($url !== '' && preg_match('~^https?://(www\.)?forms\.yandex\.ru/~i', $url)) {
+        $url = remove_query_arg('iframe', $url);
+    }
+    return $url;
+}
+
+// Версия = дата изменения файла для всех CSS/JS темы. Плагин Theme Editor (ms_theme_editor_src)
+// подменяет ?ver= у файлов темы на версию темы (1.0.0), и после деплоя браузеры не видели новых стилей.
+function technopark_asset_version($src) {
+    $base = get_stylesheet_directory_uri() . '/';
+    if (strpos($src, $base) !== 0) return $src;
+    $path = get_stylesheet_directory() . '/' . strtok(substr($src, strlen($base)), '?');
+    if (!is_file($path)) return $src;
+    return add_query_arg('ver', filemtime($path), remove_query_arg('ver', $src));
+}
+add_filter('style_loader_src', 'technopark_asset_version', 99);
+add_filter('script_loader_src', 'technopark_asset_version', 99);
 
 add_filter('body_class', function($classes) {
     $classes[] = 'var(--bg-neutral-100);';
@@ -388,6 +412,23 @@ add_action('init', 'create_team_post_type');
 add_action('after_setup_theme', function () {
     add_theme_support('post-thumbnails', array('team'));
 }, 11);
+
+// Фото сотрудника — в основной колонке под заголовком, а не маленькой ссылкой в боковой
+add_action('add_meta_boxes_team', function () {
+    remove_meta_box('postimagediv', 'team', 'side');
+    add_meta_box('postimagediv', 'Фото сотрудника', 'post_thumbnail_meta_box', 'team', 'normal', 'high');
+});
+
+// Колонка «Фото» в списке «Команда» — сразу видно, у кого фото нет
+add_filter('manage_team_posts_columns', function ($columns) {
+    return array_slice($columns, 0, 1, true) + array('team_photo' => 'Фото') + array_slice($columns, 1, null, true);
+});
+add_action('manage_team_posts_custom_column', function ($column, $post_id) {
+    if ($column !== 'team_photo') return;
+    echo has_post_thumbnail($post_id)
+        ? get_the_post_thumbnail($post_id, array(48, 48), array('style' => 'width:48px;height:48px;object-fit:cover;border-radius:50%'))
+        : '<span style="color:#b32d2e">нет фото</span>';
+}, 10, 2);
 
 add_filter('post_type_labels_team', function ($labels) {
     $labels->featured_image        = 'Фото сотрудника';

@@ -11,6 +11,10 @@ html {
 }
 
 .tp-es {
+    /* базовый текст 18px; --tp-es-fs — множитель из поля «Размер текста» секции */
+    --tp-es-fs: 1;
+    font-size: calc(1.125rem * var(--tp-es-fs));
+    line-height: 1.6;
     padding: 48px 0;
     scroll-margin-top: 110px; /* под липкой шапкой */
 }
@@ -21,10 +25,25 @@ html {
     padding: 0 24px;
 }
 
+.tp-es .text-body {
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+.tp-es .text-small {
+    font-size: 0.875em;
+}
+
+/* основной шрифт тонкий (300), и обычный bolder дал бы лишь 400 — почти не видно */
+.tp-es strong,
+.tp-es b {
+    font-weight: 700;
+}
+
 .tp-es-title {
     margin: 0 0 32px;
-    color: inherit;
-    font-size: var(--font-size-h2, clamp(1.375rem, 4.5vw, 2.25rem));
+    color: var(--tp-es-title-color, inherit);
+    font-size: calc(var(--font-size-h2, clamp(1.375rem, 4.5vw, 2.25rem)) * var(--tp-es-fs));
     line-height: 1.2;
     font-weight: 400;
 }
@@ -45,9 +64,37 @@ html {
     color: inherit;
 }
 
+/* Прозрачная: без заливки и рамки, цвет текста секции; при наведении — лёгкая подложка */
+.tp-es .tp-btn--ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: inherit;
+}
+
+.tp-es .tp-btn--ghost:hover {
+    background-color: rgba(127, 127, 127, 0.12);
+    box-shadow: none;
+}
+
+/* Размеры кнопок (поле «Размер»); средняя — обычная .tp-btn */
+.tp-es .tp-btn.tp-es-btn--s {
+    min-height: 34px;
+    padding: 0 24px;
+    border-radius: 17px;
+    font-size: 0.85em;
+}
+
+.tp-es .tp-btn.tp-es-btn--l {
+    min-height: 56px;
+    padding: 0 56px;
+    border-radius: 28px;
+    font-size: 1.2em;
+}
+
 .tp-es-buttons {
     display: flex;
     flex-wrap: wrap;
+    align-items: center; /* кнопки разных размеров не растягиваются по самой высокой */
     gap: 16px;
 }
 
@@ -67,6 +114,19 @@ html {
     .tp-es-buttons:not(.tp-es-buttons--center) .tp-btn {
         flex: 1 1 100%;
     }
+    /* длинный текст кнопки переносится, а не вылезает за экран */
+    .tp-es .tp-btn {
+        max-width: 100%;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+    .tp-es .tp-btn.tp-es-btn--l {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
 }
 
 /* ---------- 1. Обложка ---------- */
@@ -82,9 +142,10 @@ html {
     background: #e5e7eb;
 }
 
-.tp-es-cover--s { height: clamp(140px, 20vw, 260px); }
-.tp-es-cover--m { height: clamp(180px, 30vw, 400px); }
-.tp-es-cover--l { height: clamp(240px, 42vw, 560px); }
+/* min-height: если надпись с кнопками не помещается (мобилка), обложка вырастает, а не обрезает их */
+.tp-es-cover--s { min-height: clamp(140px, 20vw, 260px); }
+.tp-es-cover--m { min-height: clamp(180px, 30vw, 400px); }
+.tp-es-cover--l { min-height: clamp(240px, 42vw, 560px); }
 
 .tp-es-cover-img {
     position: absolute;
@@ -100,11 +161,34 @@ html {
     background: rgba(0, 0, 0, 0.45);
 }
 
-.tp-es-cover-text {
+.tp-es-cover-content {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
     max-width: 90%;
     padding: 24px;
-    font-size: clamp(1.5rem, 5vw, 4rem);
+}
+
+.tp-es-cover--bottom-left .tp-es-cover-content {
+    padding: clamp(16px, 4vw, 48px);
+}
+
+.tp-es-cover-buttons {
+    justify-content: flex-start;
+}
+
+/* С кнопками надпись выровнена влево (блок целиком по центру обложки):
+   у строк по центру разный левый край, и кнопки «по левому краю текста» не совпали бы */
+.tp-es-cover-content--with-buttons .tp-es-cover-text {
+    text-align: left;
+}
+
+.tp-es-cover-text {
+    position: relative;
+    margin: 0;
+    font-size: calc(clamp(1.5rem, 5vw, 4rem) * var(--tp-es-fs));
     font-weight: 900;
     line-height: 1.05;
     text-align: center;
@@ -118,7 +202,6 @@ html {
 
 .tp-es-cover--bottom-left .tp-es-cover-text {
     text-align: left;
-    padding: clamp(16px, 4vw, 48px);
 }
 
 /* ---------- 2. Hero ---------- */
@@ -136,8 +219,8 @@ html {
 
 .tp-es-hero-title {
     margin: 0;
-    color: inherit;
-    font-size: var(--font-size-h1, clamp(1.75rem, 5vw, 3rem));
+    color: var(--tp-es-title-color, inherit);
+    font-size: calc(var(--font-size-h1, clamp(1.75rem, 5vw, 3rem)) * var(--tp-es-fs));
     line-height: 1.15;
     font-weight: 700;
     overflow-wrap: anywhere;
@@ -237,23 +320,33 @@ html {
 }
 
 /* Иконка сверху, надпись прижата слева снизу */
-.tp-es-cards--bottom-left .tp-es-card-body {
+.tp-es-cards--bottom-left .tp-es-card-body,
+.tp-es-cards--outline .tp-es-card-body,
+.tp-es-cards--photo-bg .tp-es-card-body {
     justify-content: space-between;
 }
 
-.tp-es-cards--bottom-left .tp-es-card-text {
+.tp-es-cards--bottom-left .tp-es-card-text,
+.tp-es-cards--outline .tp-es-card-text,
+.tp-es-cards--photo-bg .tp-es-card-text {
     margin-top: auto;
 }
 
-.tp-es-cards--bottom-left .tp-es-card-title {
-    font-size: clamp(0.7rem, 9cqi, 1.75rem);
+.tp-es-cards--bottom-left .tp-es-card-title,
+.tp-es-cards--outline .tp-es-card-title,
+.tp-es-cards--photo-bg .tp-es-card-title,
+.tp-es-cards--photo-top .tp-es-card-title {
+    font-size: calc(clamp(0.7rem, 9cqi, 1.75rem) * var(--tp-es-fs));
     line-height: 1.2;
     font-weight: 500;
 }
 
-.tp-es-cards--bottom-left .tp-es-card-caption {
+.tp-es-cards--bottom-left .tp-es-card-caption,
+.tp-es-cards--outline .tp-es-card-caption,
+.tp-es-cards--photo-bg .tp-es-card-caption,
+.tp-es-cards--photo-top .tp-es-card-caption {
     margin-top: 0.4em;
-    font-size: clamp(0.6rem, 6.5cqi, 1.125rem);
+    font-size: calc(clamp(0.6rem, 6.5cqi, 1.125rem) * var(--tp-es-fs));
     line-height: 1.3;
     opacity: 0.85;
 }
@@ -266,15 +359,98 @@ html {
 }
 
 .tp-es-cards--center .tp-es-card-title {
-    font-size: clamp(1rem, 20cqi, 4.5rem);
+    font-size: calc(clamp(1rem, 20cqi, 4.5rem) * var(--tp-es-fs));
     line-height: 1;
     font-weight: 700;
 }
 
 .tp-es-cards--center .tp-es-card-caption {
     margin-top: 0.5em;
-    font-size: clamp(0.6rem, 7cqi, 1.25rem);
+    font-size: calc(clamp(0.6rem, 7cqi, 1.25rem) * var(--tp-es-fs));
     line-height: 1.3;
+}
+
+/* --- Иконка слева, текст справа: горизонтальная, высота по содержимому --- */
+.tp-es-cards--icon-left .tp-es-card::before,
+.tp-es-cards--photo-top .tp-es-card::before {
+    display: none;
+}
+
+.tp-es-cards--icon-left .tp-es-card-body {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+}
+
+.tp-es-cards--icon-left .tp-es-card-icon {
+    width: 44px;
+    height: 44px;
+}
+
+.tp-es-cards--icon-left .tp-es-card-title {
+    font-size: calc(1.15rem * var(--tp-es-fs));
+    line-height: 1.25;
+    font-weight: 500;
+}
+
+.tp-es-cards--icon-left .tp-es-card-caption {
+    margin-top: 0.3em;
+    font-size: calc(0.95rem * var(--tp-es-fs));
+    line-height: 1.35;
+    opacity: 0.85;
+}
+
+@media (max-width: 639px) {
+    .tp-es-cards--icon-left.tp-es-cards--3,
+    .tp-es-cards--icon-left.tp-es-cards--4 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* --- Фото сверху, текст снизу --- */
+.tp-es-cards--photo-top .tp-es-card,
+.tp-es-cards--photo-bg .tp-es-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.tp-es-cards--photo-top .tp-es-card {
+    flex-direction: column;
+}
+
+.tp-es-cards--photo-top .tp-es-card-photo {
+    aspect-ratio: 4 / 3;
+}
+
+.tp-es-cards--photo-top .tp-es-card-photo img,
+.tp-es-cards--photo-bg .tp-es-card-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tp-es-cards--photo-top .tp-es-card-body {
+    flex: 0 0 auto;
+}
+
+/* --- Фото на фоне, текст поверх (затемнение снизу для читаемости) --- */
+.tp-es-cards--photo-bg .tp-es-card-photo {
+    position: absolute;
+    inset: 0;
+}
+
+.tp-es-cards--photo-bg .tp-es-card--has-photo .tp-es-card-body {
+    position: relative;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.15) 55%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* --- Контурная: без заливки, рамка и текст цвета карточки --- */
+.tp-es-cards--outline .tp-es-card {
+    background: transparent;
+    border: 2px solid;
+    box-shadow: none;
 }
 
 .tp-es-card-icon-wrap {
@@ -352,8 +528,8 @@ html {
 
 .tp-es-feature-title {
     margin: 0;
-    color: inherit;
-    font-size: 1.25rem;
+    color: var(--tp-es-title-color, inherit);
+    font-size: 1.25em;
     line-height: 1.3;
     font-weight: 700;
 }
@@ -417,6 +593,36 @@ html {
 .tp-es-faq .tp-faq-trigger {
     padding-top: 20px;
     padding-bottom: 20px;
+    color: var(--tp-es-faq-color, #000000);
+    font-size: 1.15em;
+}
+
+.tp-es-faq .tp-faq-content {
+    background: transparent;
+}
+
+.tp-es-faq .tp-faq-content-inner {
+    color: var(--tp-es-faq-color, #000000);
+}
+
+/* Отформатированный текст из редактора: списки и выравнивание */
+.tp-es-hero-text ul, .tp-es-feature-text ul, .tp-faq-content-inner ul,
+.tp-es-hero-text ol, .tp-es-feature-text ol, .tp-faq-content-inner ol {
+    margin: 0.5em 0;
+    padding-left: 1.4em;
+}
+
+.tp-es-hero-text ul, .tp-es-feature-text ul, .tp-faq-content-inner ul { list-style: disc; }
+.tp-es-hero-text ol, .tp-es-feature-text ol, .tp-faq-content-inner ol { list-style: decimal; }
+
+.tp-es-hero-text a, .tp-es-feature-text a, .tp-faq-content-inner a {
+    color: var(--color-primary, #64BDE1);
+}
+
+.tp-es-hero-text blockquote, .tp-es-feature-text blockquote, .tp-faq-content-inner blockquote {
+    margin: 0.75em 0;
+    padding-left: 1em;
+    border-left: 3px solid var(--color-primary, #64BDE1);
 }
 
 /* ---------- 8. Партнёры ---------- */
@@ -465,7 +671,7 @@ html {
     box-sizing: content-box;
     padding: 20px;
     border-radius: 14px;
-    background: #ffffff;
+    background: var(--tp-es-tile-bg, #ffffff);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
 }
 
@@ -479,7 +685,6 @@ a.tp-es-partner:hover {
 
 @media (max-width: 767px) {
     .tp-es-partners {
-        --tp-es-h: min(var(--tp-es-logo-h, 90px), 120px);
         grid-template-columns: repeat(var(--tp-es-per-row-mobile, 2), minmax(0, 1fr));
         gap: 20px;
     }

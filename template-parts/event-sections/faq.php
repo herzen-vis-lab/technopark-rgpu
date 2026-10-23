@@ -10,7 +10,7 @@ $uid = 'tp-es-faq-' . (int) $args['index'];
 <?php endif; ?>
 <div class="tp-faq-list tp-es-faq" data-tp-accordion>
     <?php foreach (array_values($items) as $i => $item) : ?>
-        <div class="tp-faq-item shadow-custom">
+        <div class="tp-faq-item shadow-custom" style="<?php echo esc_attr('background-color:' . ($s['item_bg'] ?: '#FFFFFF') . ';--tp-es-faq-color:' . ($s['item_color'] ?: '#000000')); ?>">
             <h3 class="tp-es-faq-heading">
                 <button type="button" class="tp-faq-trigger" aria-expanded="false" aria-controls="<?php echo $uid . '-' . $i; ?>">
                     <span><?php echo esc_html($item['question']); ?></span>

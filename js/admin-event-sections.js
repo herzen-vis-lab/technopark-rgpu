@@ -115,7 +115,7 @@ jQuery(function ($) {
                 var editorId = 'tp-es-editor-' + (++editorCounter);
                 $control = $('<textarea class="widefat">').attr({ id: editorId, rows: 14 }).val(obj[f.key] || '');
                 $control.on('input', function () { set(this.value); }); // режим «Текст»
-                pendingEditors.push({ id: editorId, set: set });
+                pendingEditors.push({ id: editorId, set: set, height: f.small ? 160 : 320 });
                 break;
 
             case 'number':
@@ -128,12 +128,17 @@ jQuery(function ($) {
                 $.each(f.options, function (value, text) {
                     $control.append($('<option>').val(value).text(text));
                 });
+                // у секций, созданных до появления поля, значения нет — показываем значение по умолчанию
+                if (obj[f.key] === undefined || obj[f.key] === null || !(String(obj[f.key]) in f.options)) {
+                    obj[f.key] = f['default'] !== undefined ? f['default'] : Object.keys(f.options)[0];
+                }
                 $control.val(String(obj[f.key])).on('change', function () { set(this.value); render(); });
                 break;
 
             case 'checkbox':
                 $control = $('<input type="checkbox">').prop('checked', !!obj[f.key]);
-                $control.on('change', function () { set(this.checked); });
+                // перерисовка — чтобы появились/скрылись поля с show_if по этой галочке
+                $control.on('change', function () { set(this.checked); render(); });
                 return $wrap.append($('<label class="tp-es-check">').append($control, ' ', label));
 
             case 'color':
@@ -344,9 +349,13 @@ jQuery(function ($) {
             wp.editor.initialize(ed.id, {
                 tinymce: {
                     wpautop: true,
-                    height: 320,
-                    toolbar1: 'formatselect,bold,italic,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,wp_more,fullscreen',
-                    toolbar2: 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo',
+                    height: ed.height,
+                    fontsize_formats: '12px 14px 16px 18px 20px 24px 28px 32px 40px 48px',
+                    // всё в одной строке: вторую строку WordPress по умолчанию прячет
+                    toolbar1: 'formatselect,fontsizeselect,bold,italic,underline,strikethrough,forecolor,backcolor,'
+                        + 'alignleft,aligncenter,alignright,alignjustify,bullist,numlist,outdent,indent,blockquote,hr,'
+                        + 'superscript,subscript,link,unlink,removeformat,pastetext,charmap,undo,redo,fullscreen',
+                    toolbar2: '',
                     setup: function (editor) {
                         editor.on('change keyup NodeChange SetContent', function () {
                             editor.save();

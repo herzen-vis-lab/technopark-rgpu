@@ -63,25 +63,14 @@ $event_years = $wpdb->get_col(
                 ];
             }
             
-            // Сортировка: сначала "Скоро", потом "Уже идёт", потом "Завершённые"
+            // Сортировка по дате начала: от новых к старым (будущие сверху), без даты — в конце
             usort($events_array, function($a, $b) {
-                $status_order = [
-                    'coming' => 1,
-                    'ongoing' => 2,
-                    'ended' => 3,
-                ];
-                
-                $order_a = $status_order[$a['status']];
-                $order_b = $status_order[$b['status']];
-                
-                if ($order_a !== $order_b) {
-                    return $order_a - $order_b;
+                if (!$a['sort_date'] || !$b['sort_date']) {
+                    return (int) !$a['sort_date'] - (int) !$b['sort_date'];
                 }
-                
-                // Внутри одинакового статуса сортируем по дате (сначала ближайшие)
-                return strtotime($a['sort_date']) - strtotime($b['sort_date']);
+                return strcmp($b['sort_date'], $a['sort_date']);
             });
-            
+
             foreach ($events_array as $event) {
                 global $post;
                 $post = get_post($event['post_id']);

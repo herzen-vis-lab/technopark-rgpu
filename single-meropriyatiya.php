@@ -60,7 +60,7 @@ endif;
         <?php if (!empty($event_buttons)) : ?>
             <div class="flex flex-col sm:flex-row gap-4 mb-8">
                 <?php foreach ($event_buttons as $button) : ?>
-                    <a href="<?php echo esc_url($button['link'] ?: '#'); ?>" 
+                    <a href="<?php echo esc_url(technopark_button_url($button['link']) ?: '#'); ?>" 
                        class="tp-btn <?php echo $button['style'] === 'primary' ? 'tp-btn--primary' : 'tp-btn--outline'; ?>">
                         <?php echo esc_html($button['text']); ?>
                     </a>

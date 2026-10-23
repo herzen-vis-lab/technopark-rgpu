@@ -32,7 +32,7 @@ if (empty($kop_title)) {
          Прежняя сетка работ из админки: get_template_part('template-parts/projects-section') -->
     <?php $collections_url = defined('TP_COLLECTIONS_URL') ? TP_COLLECTIONS_URL : 'https://collections.herzen.spb.ru'; ?>
     <div class="mt-8 rounded-3xl shadow-custom overflow-hidden">
-        <iframe src="<?php echo esc_url($collections_url . '/catalog?collection=kop&show_desc=0&embed=1'); ?>"
+        <iframe src="<?php echo esc_url($collections_url . '/catalog?collection=kop&show_desc=0&show_chars=1&embed=1'); ?>"
                 title="Коробочные образовательные продукты — виртуальные коллекции РГПУ"
                 width="100%" height="450" style="display: block; width: 100%; height: 450px; border: 0;"
                 allow="fullscreen" allowfullscreen loading="lazy"></iframe>

@@ -7,7 +7,7 @@ $title = isset($args['title']) ? $args['title'] : 'Как добраться';
 $icons = function_exists('tp_es_icons') ? tp_es_icons() : array();
 $icon = function ($name) use ($icons) {
     if (!isset($icons[$name])) return '';
-    return '<svg class="tp-how-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $icons[$name][1] . '</svg>';
+    return '<svg class="tp-how-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $icons[$name][1] . '</svg>';
 };
 // ВКонтакте — ссылка и иконка те же, что в футере (Технопарк → Футер → Соцсети)
 $vk_link = 'https://vk.com/technoparkrgpu';
@@ -18,7 +18,7 @@ if ($footer) {
         if (!empty($social['link']) && preg_match('~(^|\.)vk\.(com|ru)$~', (string) parse_url($social['link'], PHP_URL_HOST))) {
             $vk_link = $social['link'];
             $vk_svg = preg_replace(array('/\s(width|height)="[^"]*"/', '/fill="#0+"/'), array('', 'fill="currentColor"'), (string) $social['icon']);
-            $vk_svg = str_replace('<svg', '<svg class="tp-how-icon" aria-hidden="true"', $vk_svg);
+            $vk_svg = str_replace('<svg', '<svg class="tp-how-icon" width="24" height="24" aria-hidden="true"', $vk_svg);
         }
     }
 }

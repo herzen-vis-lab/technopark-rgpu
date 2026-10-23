@@ -8,8 +8,9 @@ $items = array_filter($s['items'], function ($item) { return !empty($item['image
 if (!$items) return;
 
 // Высота ряда — по самому крупному логотипу, чтобы увеличенные не вылезали из ячейки
-$max_scale = max(array_map(function ($item) { return max(20, (int) ($item['scale'] ?? 100)); }, $items));
-$style = '--tp-es-per-row: ' . (int) $s['per_row'] . '; --tp-es-per-row-mobile: ' . (int) $s['per_row_mobile']
+$max_scale = max(array_map(function ($item) { return max(1, (int) ($item['scale'] ?? 100)); }, $items));
+$tile_bg = !empty($s['tile_bg']) ? $s['tile_bg'] : '#FFFFFF';
+$style = '--tp-es-tile-bg: ' . $tile_bg . '; --tp-es-per-row: ' . (int) $s['per_row'] . '; --tp-es-per-row-mobile: ' . (int) $s['per_row_mobile']
     . '; --tp-es-logo-h: ' . (int) $s['height'] . 'px; --tp-es-row-scale: ' . ($max_scale / 100) . ';';
 ?>
 <?php if ($s['title']) : ?>
@@ -25,7 +26,7 @@ $style = '--tp-es-per-row: ' . (int) $s['per_row'] . '; --tp-es-per-row-mobile: 
             'sizes'   => '(max-width: 767px) 50vw, 33vw',
         ));
         if (!$img) continue;
-        $cell = 'style="--tp-es-scale: ' . (max(20, (int) ($item['scale'] ?? 100)) / 100) . '"';
+        $cell = 'style="--tp-es-scale: ' . (max(1, (int) ($item['scale'] ?? 100)) / 100) . '"';
         ?>
         <?php if ($item['url']) : ?>
             <a class="tp-es-partner" href="<?php echo esc_url($item['url']); ?>" target="_blank" rel="noopener" <?php echo $cell; ?>><span class="tp-es-partner-box"><?php echo $img; ?></span></a>

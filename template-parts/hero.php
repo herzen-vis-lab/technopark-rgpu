@@ -55,11 +55,11 @@ $secondary_button_link = $button_2_link ?: home_url('/event/');
 
                 <!-- Кнопки: всегда слева -->
                 <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-start">
-                    <a href="<?php echo esc_url($primary_button_link); ?>" class="tp-btn tp-btn--primary text-body text-center">
+                    <a href="<?php echo esc_url(technopark_button_url($primary_button_link)); ?>" class="tp-btn tp-btn--primary text-body text-center">
                         <?php echo esc_html($primary_button_text); ?>
                     </a>
 
-                    <a href="<?php echo esc_url($secondary_button_link); ?>" class="tp-btn tp-btn--outline-light text-body text-center">
+                    <a href="<?php echo esc_url(technopark_button_url($secondary_button_link)); ?>" class="tp-btn tp-btn--outline-light text-body text-center">
                         <?php echo esc_html($secondary_button_text); ?>
                     </a>
                 </div>

@@ -611,6 +611,35 @@ button, input, select, textarea {
     font-family: inherit;
 }
 
+/* На компьютере кнопки равномерно занимают всю ширину контейнера */
+@media (min-width: 1024px) {
+    .tp-event-filters {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+    }
+    .tp-event-filters .tp-btn {
+        min-width: 0;
+        padding: 0 16px;
+    }
+    .tp-event-filters .tp-filter-year {
+        text-align: center;
+        text-align-last: center;
+    }
+}
+
+/* Отступы карточек: между рядами и от последнего ряда до футера */
+#event-section [data-event-grid] {
+    row-gap: 40px;
+    margin-bottom: 32px;
+}
+
+@media (max-width: 767px) {
+    #event-section [data-event-grid] {
+        row-gap: 24px;
+    }
+}
+
 /* На узких экранах строка не переносится, а листается вбок */
 @media (max-width: 767px) {
     .tp-event-filters {
@@ -731,4 +760,16 @@ button, input, select, textarea {
         padding: 8px 0 0;
         gap: 20px;
     }
+}
+
+/* Картинки в тексте из редактора (старый шаблон мероприятий/проектов, страницы) не шире колонки:
+   в редакторе им бывает задана ширина в пикселях (например, width: 1234px у логотипов организаторов) */
+main .prose img,
+main .wp-block-image img {
+    max-width: 100%;
+    height: auto !important;
+}
+
+main .prose iframe {
+    max-width: 100%;
 }

@@ -29,7 +29,12 @@ function tp_es_button_fields() {
         array('key' => 'anchor', 'type' => 'anchor', 'label' => 'Slug секции', 'show_if' => array('link_type', 'anchor')),
         array('key' => 'new_tab', 'type' => 'checkbox', 'label' => 'Открывать в новой вкладке', 'show_if' => array('link_type', 'url')),
         array('key' => 'style', 'type' => 'select', 'label' => 'Вид', 'default' => 'primary',
-            'options' => array('primary' => 'Заливка', 'outline' => 'Контур', 'dark' => 'Тёмная', 'white' => 'Белая')),
+            'options' => array('primary' => 'Заливка', 'outline' => 'Контур', 'ghost' => 'Прозрачная', 'dark' => 'Тёмная', 'white' => 'Белая')),
+        array('key' => 'size', 'type' => 'select', 'label' => 'Размер', 'default' => 'm',
+            'options' => array('s' => 'Маленькая', 'm' => 'Средняя', 'l' => 'Большая')),
+        array('key' => 'btn_color', 'type' => 'color', 'label' => 'Цвет кнопки', 'default' => '',
+            'help' => 'Пусто — по виду кнопки. У контурной это цвет рамки, у прозрачной не используется.'),
+        array('key' => 'text_color', 'type' => 'color', 'label' => 'Цвет текста кнопки', 'default' => ''),
     );
 }
 
@@ -41,6 +46,9 @@ function tp_es_schema() {
             array('key' => 'slug', 'type' => 'slug', 'label' => 'Slug для якоря', 'help' => 'Латиницей, например registration. По нему работают якорные кнопки.'),
             array('key' => 'bg', 'type' => 'color', 'label' => 'Фон секции', 'default' => ''),
             array('key' => 'color', 'type' => 'color', 'label' => 'Цвет текста', 'default' => ''),
+            array('key' => 'title_color', 'type' => 'color', 'label' => 'Цвет заголовков', 'default' => ''),
+            array('key' => 'text_size', 'type' => 'select', 'label' => 'Размер текста', 'default' => 'm',
+                'options' => array('s' => 'Мелкий', 'm' => 'Обычный', 'l' => 'Крупный', 'xl' => 'Очень крупный')),
             array('key' => 'hidden', 'type' => 'checkbox', 'label' => 'Скрыть секцию'),
         ),
         'types' => array(
@@ -55,6 +63,9 @@ function tp_es_schema() {
                     array('key' => 'overlay', 'type' => 'checkbox', 'label' => 'Затемнять картинку под надписью', 'default' => true),
                     array('key' => 'height', 'type' => 'select', 'label' => 'Высота', 'default' => 'm',
                         'options' => array('s' => 'Низкая', 'm' => 'Средняя', 'l' => 'Высокая')),
+                    array('key' => 'buttons', 'type' => 'repeater', 'label' => 'Кнопки под надписью', 'item_label' => 'Кнопка',
+                        'help' => 'Выравниваются по левому краю надписи. Кнопка без ссылки/якоря не выводится.',
+                        'fields' => tp_es_button_fields()),
                 ),
             ),
             'hero' => array(
@@ -62,7 +73,7 @@ function tp_es_schema() {
                 'fields' => array(
                     array('key' => 'title', 'type' => 'text', 'label' => 'Заголовок', 'help' => 'Пусто — название мероприятия.'),
                     array('key' => 'show_dates', 'type' => 'checkbox', 'label' => 'Показывать даты мероприятия', 'default' => true),
-                    array('key' => 'text', 'type' => 'textarea', 'label' => 'Текст'),
+                    array('key' => 'text', 'type' => 'richtext', 'label' => 'Текст', 'small' => true),
                     array('key' => 'image', 'type' => 'image', 'label' => 'Квадратная картинка справа'),
                     array('key' => 'buttons', 'type' => 'repeater', 'label' => 'Кнопки', 'item_label' => 'Кнопка',
                         'help' => 'Кнопка без ссылки/якоря не выводится.',
@@ -87,6 +98,10 @@ function tp_es_schema() {
                         'options' => array(
                             'bottom-left' => 'Иконка сверху, надпись слева снизу',
                             'center' => 'Крупный текст по центру + подпись',
+                            'icon-left' => 'Иконка слева, текст справа',
+                            'photo-top' => 'Фото сверху, текст снизу',
+                            'photo-bg' => 'Фото на фоне, текст поверх',
+                            'outline' => 'Контурная (без заливки)',
                         )),
                     array('key' => 'card_bg', 'type' => 'color', 'label' => 'Цвет карточек', 'default' => '#64BDE1'),
                     array('key' => 'card_color', 'type' => 'color', 'label' => 'Цвет текста карточек', 'default' => '#FFFFFF'),
@@ -95,6 +110,8 @@ function tp_es_schema() {
                             $icon_field,
                             array('key' => 'title', 'type' => 'text', 'label' => 'Надпись / крупный текст'),
                             array('key' => 'caption', 'type' => 'text', 'label' => 'Подпись (необязательно)'),
+                            array('key' => 'image', 'type' => 'image', 'label' => 'Фото карточки',
+                                'help' => 'Для видов «Фото сверху» и «Фото на фоне».'),
                             array('key' => 'bg', 'type' => 'color', 'label' => 'Свой цвет карточки', 'default' => ''),
                             array('key' => 'color', 'type' => 'color', 'label' => 'Свой цвет текста', 'default' => ''),
                         )),
@@ -112,7 +129,7 @@ function tp_es_schema() {
                         'fields' => array(
                             $icon_field,
                             array('key' => 'title', 'type' => 'text', 'label' => 'Заголовок'),
-                            array('key' => 'text', 'type' => 'textarea', 'label' => 'Текст'),
+                            array('key' => 'text', 'type' => 'richtext', 'label' => 'Текст', 'small' => true),
                             array('key' => 'side', 'type' => 'select', 'label' => 'Расположение', 'default' => 'left',
                                 'options' => array('left' => 'Слева', 'right' => 'Справа')),
                         )),
@@ -142,15 +159,16 @@ function tp_es_schema() {
                         'options' => array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6', '8' => '8')),
                     array('key' => 'per_row_mobile', 'type' => 'select', 'label' => 'В ряду на мобилке', 'default' => '2',
                         'options' => array('1' => '1', '2' => '2', '3' => '3', '4' => '4')),
-                    array('key' => 'height', 'type' => 'number', 'label' => 'Высота логотипа, px', 'default' => 90, 'min' => 20, 'max' => 600,
+                    array('key' => 'height', 'type' => 'number', 'label' => 'Высота логотипа, px', 'default' => 90, 'min' => 1,
                         'help' => 'Логотип не обрезается: вписывается в эту высоту и ширину ячейки с сохранением пропорций.'),
-                    array('key' => 'tiles', 'type' => 'checkbox', 'label' => 'Белые плитки под логотипами', 'default' => false),
+                    array('key' => 'tiles', 'type' => 'checkbox', 'label' => 'Плитки под логотипами', 'default' => false),
+                    array('key' => 'tile_bg', 'type' => 'color', 'label' => 'Цвет плиток', 'default' => '#FFFFFF', 'show_if' => array('tiles', true)),
                     array('key' => 'items', 'type' => 'repeater', 'label' => 'Логотипы', 'item_label' => 'Логотип', 'bulk' => 'image',
                         'fields' => array(
                             array('key' => 'image', 'type' => 'image', 'label' => 'Логотип'),
                             array('key' => 'url', 'type' => 'url', 'label' => 'Ссылка (необязательно)'),
                             array('key' => 'name', 'type' => 'text', 'label' => 'Название (для alt)'),
-                            array('key' => 'scale', 'type' => 'number', 'label' => 'Масштаб, %', 'default' => 100, 'min' => 20, 'max' => 300,
+                            array('key' => 'scale', 'type' => 'number', 'label' => 'Масштаб, %', 'default' => 100, 'min' => 1,
                                 'help' => 'Относительно остальных логотипов: 50 — вдвое меньше, 150 — в полтора раза больше.'),
                         )),
                 ),
@@ -187,10 +205,12 @@ function tp_es_schema() {
                 'label' => 'Вопросы и ответы',
                 'fields' => array(
                     array('key' => 'title', 'type' => 'text', 'label' => 'Заголовок', 'default' => 'Часто задаваемые вопросы'),
+                    array('key' => 'item_bg', 'type' => 'color', 'label' => 'Цвет плашек вопросов', 'default' => '#FFFFFF'),
+                    array('key' => 'item_color', 'type' => 'color', 'label' => 'Цвет текста вопросов', 'default' => '#000000'),
                     array('key' => 'items', 'type' => 'repeater', 'label' => 'Вопросы', 'item_label' => 'Вопрос',
                         'fields' => array(
                             array('key' => 'question', 'type' => 'text', 'label' => 'Вопрос'),
-                            array('key' => 'answer', 'type' => 'textarea', 'label' => 'Ответ'),
+                            array('key' => 'answer', 'type' => 'richtext', 'label' => 'Ответ', 'small' => true),
                         )),
                 ),
             ),
@@ -400,7 +420,7 @@ function tp_es_icon_html($icon, $class = 'tp-es-icon') {
     if ($icon['source'] === 'library' && !empty($icon['name'])) {
         $icons = tp_es_icons();
         if (!isset($icons[$icon['name']])) return '';
-        return '<svg class="' . esc_attr($class) . '" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $icons[$icon['name']][1] . '</svg>';
+        return '<svg class="' . esc_attr($class) . '" width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $icons[$icon['name']][1] . '</svg>';
     }
 
     if ($icon['source'] === 'upload' && !empty($icon['image'])) {
@@ -421,12 +441,28 @@ function tp_es_button_html($button) {
         $target = '';
     } else {
         if (empty($button['url'])) return '';
-        $href = $button['url'];
+        $href = technopark_button_url($button['url']);
         $target = !empty($button['new_tab']) ? ' target="_blank" rel="noopener"' : '';
     }
 
-    $style = in_array($button['style'] ?? '', array('primary', 'outline', 'dark', 'white'), true) ? $button['style'] : 'primary';
-    return '<a href="' . esc_url($href) . '" class="tp-btn tp-btn--' . $style . ' text-body"' . $target . '>' . esc_html($button['text']) . '</a>';
+    $style = in_array($button['style'] ?? '', array('primary', 'outline', 'ghost', 'dark', 'white'), true) ? $button['style'] : 'primary';
+
+    // Свои цвета кнопки: у контурной «цвет кнопки» — это рамка, у остальных — заливка
+    $css = '';
+    if (!empty($button['btn_color'])) {
+        // у контурной «цвет кнопки» — рамка; у прозрачной заливки нет вовсе, цвет кнопки ей не нужен
+        $css .= $style === 'ghost' ? '' : ($style === 'outline'
+            ? 'border-color:' . $button['btn_color'] . ';'
+            : 'background-color:' . $button['btn_color'] . ';border-color:' . $button['btn_color'] . ';');
+    }
+    if (!empty($button['text_color'])) {
+        $css .= 'color:' . $button['text_color'] . ';';
+    }
+
+    $size = in_array($button['size'] ?? '', array('s', 'l'), true) ? ' tp-es-btn--' . $button['size'] : '';
+
+    return '<a href="' . esc_url($href) . '" class="tp-btn tp-btn--' . $style . $size . ' text-body"' . $target
+        . ($css ? ' style="' . esc_attr($css) . '"' : '') . '>' . esc_html($button['text']) . '</a>';
 }
 
 /**
@@ -486,6 +522,9 @@ function tp_es_render_sections($post_id) {
         $style = '';
         if (!empty($section['bg'])) $style .= 'background-color:' . $section['bg'] . ';';
         if (!empty($section['color'])) $style .= 'color:' . $section['color'] . ';';
+        if (!empty($section['title_color'])) $style .= '--tp-es-title-color:' . $section['title_color'] . ';';
+        $sizes = array('s' => '0.9', 'l' => '1.15', 'xl' => '1.3');
+        if (isset($sizes[$section['text_size'] ?? ''])) $style .= '--tp-es-fs:' . $sizes[$section['text_size']] . ';';
         $classes = 'tp-es tp-es--' . $type . (!empty($section['bg']) ? ' tp-es--has-bg' : '');
 
         printf(

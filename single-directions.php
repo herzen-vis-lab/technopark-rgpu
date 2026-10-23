@@ -39,7 +39,7 @@ get_header();
                             ? 'tp-btn tp-btn--primary text-body w-full sm:w-auto text-center' 
                             : 'tp-btn tp-btn--outline text-body w-full sm:w-auto text-center';
                         ?>
-                        <a href="<?php echo esc_url($button['link']); ?>" class="<?php echo esc_attr($btn_class); ?>">
+                        <a href="<?php echo esc_url(technopark_button_url($button['link'])); ?>" class="<?php echo esc_attr($btn_class); ?>">
                             <?php echo esc_html($button['text']); ?>
                         </a>
                     <?php endif; ?>
