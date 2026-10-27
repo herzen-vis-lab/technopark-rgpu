@@ -1,0 +1,57 @@
+# Локальный стенд: http://localhost:8080 (админка /wp-admin, admin / admin)
+# Образы с mirror.gcr.io: Docker Hub напрямую недоступен (TLS handshake timeout)
+name: technopark-local
+
+services:
+  db:
+    image: mirror.gcr.io/library/mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: wordpress
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 20
+
+  wordpress:
+    image: mirror.gcr.io/library/wordpress:6.8-php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DEBUG: 1
+    volumes:
+      - wp:/var/www/html
+      - ./:/var/www/html/wp-content/themes/technopark-child
+
+  # Разовые команды: docker compose run --rm cli wp ...
+  cli:
+    image: mirror.gcr.io/library/wordpress:cli-php8.3
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on:
+      - wordpress
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+    volumes:
+      - wp:/var/www/html
+      - ./:/var/www/html/wp-content/themes/technopark-child
+
+volumes:
+  db:
+  wp:
