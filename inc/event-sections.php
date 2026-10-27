@@ -38,6 +38,38 @@ function tp_es_button_fields() {
     );
 }
 
+/**
+ * Оформление карточки: положение иконки, выравнивание и размеры заголовка/подписи/иконки.
+ * $inherit = true — для отдельной карточки: у каждого поля есть вариант «Как у секции» (пустое значение).
+ */
+function tp_es_card_look_fields($inherit) {
+    $fields = array(
+        array('key' => 'icon_pos', 'label' => 'Иконка', 'default' => 'top-left',
+            'options' => array('top-left' => 'Сверху слева', 'top-center' => 'Сверху по центру', 'top-right' => 'Сверху справа',
+                'left' => 'Слева от текста', 'right' => 'Справа от текста')),
+        array('key' => 'valign', 'label' => 'Текст по вертикали', 'default' => 'bottom',
+            'options' => array('top' => 'Сверху', 'center' => 'По центру', 'bottom' => 'Снизу')),
+        array('key' => 'title_align', 'label' => 'Заголовок', 'default' => 'left',
+            'options' => array('left' => 'Слева', 'center' => 'По центру', 'right' => 'Справа')),
+        array('key' => 'caption_align', 'label' => 'Подпись', 'default' => 'left',
+            'options' => array('left' => 'Слева', 'center' => 'По центру', 'right' => 'Справа')),
+        array('key' => 'title_size', 'label' => 'Размер заголовка', 'default' => 'm',
+            'options' => array('s' => 'Мелкий', 'm' => 'Обычный', 'l' => 'Крупный', 'xl' => 'Очень крупный')),
+        array('key' => 'caption_size', 'label' => 'Размер подписи', 'default' => 'm',
+            'options' => array('s' => 'Мелкий', 'm' => 'Обычный', 'l' => 'Крупный')),
+        array('key' => 'icon_size', 'label' => 'Размер иконки', 'default' => 'm',
+            'options' => array('s' => 'Маленькая', 'm' => 'Средняя', 'l' => 'Большая', 'xl' => 'Очень большая')),
+    );
+    foreach ($fields as &$field) {
+        $field['type'] = 'select';
+        if ($inherit) {
+            $field['options'] = array('' => 'Как у секции') + $field['options'];
+            $field['default'] = '';
+        }
+    }
+    return $fields;
+}
+
 function tp_es_schema() {
     $icon_field = array('key' => 'icon', 'type' => 'icon', 'label' => 'Иконка');
 
@@ -94,26 +126,32 @@ function tp_es_schema() {
                             '4' => '4 карточки в ряд (на мобилке 2×2)',
                             '6' => '6 карточек (3 / 2 / 1 в ряд)',
                         )),
-                    array('key' => 'style', 'type' => 'select', 'label' => 'Вид карточки', 'default' => 'bottom-left',
-                        'options' => array(
-                            'bottom-left' => 'Иконка сверху, надпись слева снизу',
-                            'center' => 'Крупный текст по центру + подпись',
-                            'icon-left' => 'Иконка слева, текст справа',
-                            'photo-top' => 'Фото сверху, текст снизу',
-                            'photo-bg' => 'Фото на фоне, текст поверх',
-                            'outline' => 'Контурная (без заливки)',
-                        )),
-                    array('key' => 'card_bg', 'type' => 'color', 'label' => 'Цвет карточек', 'default' => '#64BDE1'),
-                    array('key' => 'card_color', 'type' => 'color', 'label' => 'Цвет текста карточек', 'default' => '#FFFFFF'),
+                    array('key' => 'look', 'type' => 'group', 'label' => 'Оформление карточек (для всех)', 'open' => true,
+                        'help' => 'Каждая карточка может переопределить эти настройки в своём блоке «Своё оформление».',
+                        'fields' => array_merge(array(
+                            array('key' => 'fill', 'type' => 'select', 'label' => 'Фон карточек', 'default' => 'fill',
+                                'options' => array('fill' => 'Заливка', 'outline' => 'Контур (без заливки)')),
+                            array('key' => 'photo', 'type' => 'select', 'label' => 'Фото карточки', 'default' => 'none',
+                                'options' => array('none' => 'Без фото', 'top' => 'Фото сверху', 'bg' => 'Фото на фоне, текст поверх')),
+                            array('key' => 'height', 'type' => 'select', 'label' => 'Высота', 'default' => 'square',
+                                'options' => array('square' => 'Квадратная (растёт под текст)', 'auto' => 'По содержимому'),
+                                'help' => 'С фото сверху — всегда по содержимому.'),
+                        ), tp_es_card_look_fields(false), array(
+                            array('key' => 'card_bg', 'type' => 'color', 'label' => 'Цвет карточек', 'default' => '#64BDE1'),
+                            array('key' => 'card_color', 'type' => 'color', 'label' => 'Цвет текста карточек', 'default' => '#FFFFFF'),
+                        ))),
                     array('key' => 'items', 'type' => 'repeater', 'label' => 'Карточки', 'item_label' => 'Карточка',
                         'fields' => array(
                             $icon_field,
                             array('key' => 'title', 'type' => 'text', 'label' => 'Надпись / крупный текст'),
                             array('key' => 'caption', 'type' => 'text', 'label' => 'Подпись (необязательно)'),
                             array('key' => 'image', 'type' => 'image', 'label' => 'Фото карточки',
-                                'help' => 'Для видов «Фото сверху» и «Фото на фоне».'),
-                            array('key' => 'bg', 'type' => 'color', 'label' => 'Свой цвет карточки', 'default' => ''),
-                            array('key' => 'color', 'type' => 'color', 'label' => 'Свой цвет текста', 'default' => ''),
+                                'help' => 'Если в оформлении выбрано фото сверху или на фоне.'),
+                            array('key' => 'own_look', 'type' => 'group', 'label' => 'Своё оформление',
+                                'fields' => array_merge(tp_es_card_look_fields(true), array(
+                                    array('key' => 'bg', 'type' => 'color', 'label' => 'Свой цвет карточки', 'default' => ''),
+                                    array('key' => 'color', 'type' => 'color', 'label' => 'Свой цвет текста', 'default' => ''),
+                                ))),
                         )),
                 ),
             ),
@@ -161,6 +199,8 @@ function tp_es_schema() {
                         'options' => array('1' => '1', '2' => '2', '3' => '3', '4' => '4')),
                     array('key' => 'height', 'type' => 'number', 'label' => 'Высота логотипа, px', 'default' => 90, 'min' => 1,
                         'help' => 'Логотип не обрезается: вписывается в эту высоту и ширину ячейки с сохранением пропорций.'),
+                    array('key' => 'align', 'type' => 'select', 'label' => 'Неполный ряд', 'default' => 'center',
+                        'options' => array('center' => 'По центру', 'left' => 'Слева')),
                     array('key' => 'tiles', 'type' => 'checkbox', 'label' => 'Плитки под логотипами', 'default' => false),
                     array('key' => 'tile_bg', 'type' => 'color', 'label' => 'Цвет плиток', 'default' => '#FFFFFF', 'show_if' => array('tiles', true)),
                     array('key' => 'items', 'type' => 'repeater', 'label' => 'Логотипы', 'item_label' => 'Логотип', 'bulk' => 'image',
@@ -207,6 +247,10 @@ function tp_es_schema() {
                     array('key' => 'title', 'type' => 'text', 'label' => 'Заголовок', 'default' => 'Часто задаваемые вопросы'),
                     array('key' => 'item_bg', 'type' => 'color', 'label' => 'Цвет плашек вопросов', 'default' => '#FFFFFF'),
                     array('key' => 'item_color', 'type' => 'color', 'label' => 'Цвет текста вопросов', 'default' => '#000000'),
+                    array('key' => 'item_hover_bg', 'type' => 'color', 'label' => 'Цвет плашки при наведении', 'default' => '',
+                        'help' => 'Пусто — не меняется.'),
+                    array('key' => 'item_hover_color', 'type' => 'color', 'label' => 'Цвет вопроса при наведении', 'default' => '',
+                        'help' => 'Пусто — не меняется.'),
                     array('key' => 'items', 'type' => 'repeater', 'label' => 'Вопросы', 'item_label' => 'Вопрос',
                         'fields' => array(
                             array('key' => 'question', 'type' => 'text', 'label' => 'Вопрос'),
@@ -280,9 +324,38 @@ function tp_es_sanitize_field($field, $value) {
 function tp_es_sanitize_fields($fields, $data) {
     $clean = array();
     foreach ($fields as $field) {
+        if ($field['type'] === 'group') {
+            // группа — только сворачиваемый блок в админке, её поля лежат рядом с остальными
+            $clean += tp_es_sanitize_fields($field['fields'], $data);
+            continue;
+        }
         $clean[$field['key']] = tp_es_sanitize_field($field, isset($data[$field['key']]) ? $data[$field['key']] : null);
     }
     return $clean;
+}
+
+/**
+ * Секция «Карточки», сохранённая до раздельных настроек оформления, хранила один «Вид карточки» (style).
+ * Раскладываем его на новые поля — страница выглядит как раньше, а в админке видны соответствующие настройки.
+ */
+function tp_es_upgrade_cards($s) {
+    if (isset($s['icon_pos']) || !isset($s['style'])) return $s;
+
+    $base = array('fill' => 'fill', 'photo' => 'none', 'height' => 'square', 'icon_pos' => 'top-left', 'valign' => 'bottom',
+        'title_align' => 'left', 'caption_align' => 'left', 'title_size' => 'm', 'caption_size' => 'm', 'icon_size' => 'm');
+    $styles = array(
+        'bottom-left' => array(),
+        'outline'     => array('fill' => 'outline'),
+        'center'      => array('icon_pos' => 'top-center', 'valign' => 'center', 'title_align' => 'center',
+                               'caption_align' => 'center', 'title_size' => 'xl', 'caption_size' => 'l'),
+        'icon-left'   => array('height' => 'auto', 'icon_pos' => 'left', 'valign' => 'center',
+                               'title_size' => 's', 'caption_size' => 's', 'icon_size' => 's'),
+        'photo-top'   => array('photo' => 'top', 'height' => 'auto', 'valign' => 'top'),
+        'photo-bg'    => array('photo' => 'bg'),
+    );
+    $s = array_merge($s, $base, isset($styles[$s['style']]) ? $styles[$s['style']] : array());
+    unset($s['style']);
+    return $s;
 }
 
 function tp_es_sanitize_sections($raw) {
@@ -302,7 +375,12 @@ function tp_es_sanitize_sections($raw) {
 function tp_es_get_sections($post_id) {
     $json = get_post_meta($post_id, '_event_sections', true);
     $sections = $json ? json_decode($json, true) : array();
-    return is_array($sections) ? $sections : array();
+    if (!is_array($sections)) return array();
+    foreach ($sections as &$section) {
+        if (($section['type'] ?? '') === 'cards') $section = tp_es_upgrade_cards($section);
+    }
+    unset($section);
+    return $sections;
 }
 
 // ==================== АДМИНКА ====================

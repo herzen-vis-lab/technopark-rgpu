@@ -118,8 +118,30 @@
 .tp-es-field--richtext,
 .tp-es-field--embed,
 .tp-es-field--repeater,
+.tp-es-field--group,
 .tp-es-field--icon {
     grid-column: 1 / -1;
+}
+
+/* Сворачиваемый блок полей (оформление карточек) */
+.tp-es-group {
+    padding: 8px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.tp-es-group > summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.tp-es-group[open] > summary {
+    margin-bottom: 8px;
+}
+
+.tp-es-group > .description {
+    margin: 0 0 10px;
 }
 
 .tp-es-label {

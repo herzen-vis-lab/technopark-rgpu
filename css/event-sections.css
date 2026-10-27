@@ -300,6 +300,10 @@ html {
     padding-bottom: 100%;
 }
 
+.tp-es-cards--h-auto .tp-es-card::before {
+    display: none;
+}
+
 @media (max-width: 639px) {
     .tp-es-cards--6 .tp-es-card::before { padding-bottom: 50%; }
     .tp-es-cards--3 .tp-es-card { border-radius: 10px; }
@@ -314,99 +318,101 @@ html {
     padding: clamp(8px, 9cqi, 32px);
 }
 
+.tp-es-card-icon-wrap {
+    display: flex;
+}
+
+.tp-es-card-text {
+    min-width: 0;
+}
+
 .tp-es-card-title,
 .tp-es-card-caption {
     overflow-wrap: anywhere;
 }
 
-/* Иконка сверху, надпись прижата слева снизу */
-.tp-es-cards--bottom-left .tp-es-card-body,
-.tp-es-cards--outline .tp-es-card-body,
-.tp-es-cards--photo-bg .tp-es-card-body {
-    justify-content: space-between;
+/* --- Положение иконки --- */
+.tp-es-card--icon-pos-top-center .tp-es-card-icon-wrap { justify-content: center; }
+.tp-es-card--icon-pos-top-right .tp-es-card-icon-wrap { justify-content: flex-end; }
+
+/* Иконка сбоку: иконка и текст в ряд */
+.tp-es-card--icon-pos-left .tp-es-card-body,
+.tp-es-card--icon-pos-right .tp-es-card-body {
+    flex-direction: row;
 }
 
-.tp-es-cards--bottom-left .tp-es-card-text,
-.tp-es-cards--outline .tp-es-card-text,
-.tp-es-cards--photo-bg .tp-es-card-text {
-    margin-top: auto;
+.tp-es-card--icon-pos-right .tp-es-card-body {
+    flex-direction: row-reverse;
 }
 
-.tp-es-cards--bottom-left .tp-es-card-title,
-.tp-es-cards--outline .tp-es-card-title,
-.tp-es-cards--photo-bg .tp-es-card-title,
-.tp-es-cards--photo-top .tp-es-card-title {
-    font-size: calc(clamp(0.7rem, 9cqi, 1.75rem) * var(--tp-es-fs));
+.tp-es-card--icon-pos-left .tp-es-card-text,
+.tp-es-card--icon-pos-right .tp-es-card-text {
+    flex: 1;
+}
+
+@media (max-width: 639px) {
+    .tp-es-cards--icon-side.tp-es-cards--3,
+    .tp-es-cards--icon-side.tp-es-cards--4 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* --- Текст по вертикали --- */
+/* иконка сверху: «снизу» — иконка остаётся вверху, текст прижат к низу */
+.tp-es-card--valign-bottom .tp-es-card-text { margin-top: auto; }
+.tp-es-card--valign-center .tp-es-card-body { justify-content: center; }
+
+/* иконка сбоку: вместе с текстом сдвигается и иконка */
+.tp-es-card--icon-pos-left.tp-es-card--valign-center .tp-es-card-body,
+.tp-es-card--icon-pos-right.tp-es-card--valign-center .tp-es-card-body {
+    justify-content: normal;
+    align-items: center;
+}
+
+.tp-es-card--icon-pos-left.tp-es-card--valign-bottom .tp-es-card-body,
+.tp-es-card--icon-pos-right.tp-es-card--valign-bottom .tp-es-card-body {
+    align-items: flex-end;
+}
+
+/* --- Выравнивание текста --- */
+.tp-es-card--title-align-left .tp-es-card-title { text-align: left; }
+.tp-es-card--title-align-center .tp-es-card-title { text-align: center; }
+.tp-es-card--title-align-right .tp-es-card-title { text-align: right; }
+.tp-es-card--caption-align-left .tp-es-card-caption { text-align: left; }
+.tp-es-card--caption-align-center .tp-es-card-caption { text-align: center; }
+.tp-es-card--caption-align-right .tp-es-card-caption { text-align: right; }
+
+/* --- Размеры: от ширины карточки (cqi) с ограничениями, умножаются на «Размер текста» секции --- */
+.tp-es-card-title {
+    font-size: calc(clamp(0.75rem, 9cqi, 1.75rem) * var(--tp-es-fs));
     line-height: 1.2;
     font-weight: 500;
 }
 
-.tp-es-cards--bottom-left .tp-es-card-caption,
-.tp-es-cards--outline .tp-es-card-caption,
-.tp-es-cards--photo-bg .tp-es-card-caption,
-.tp-es-cards--photo-top .tp-es-card-caption {
+.tp-es-card--title-size-s .tp-es-card-title { font-size: calc(clamp(0.7rem, 7cqi, 1.25rem) * var(--tp-es-fs)); }
+.tp-es-card--title-size-l .tp-es-card-title { font-size: calc(clamp(0.9rem, 13cqi, 2.75rem) * var(--tp-es-fs)); line-height: 1.1; font-weight: 600; }
+.tp-es-card--title-size-xl .tp-es-card-title { font-size: calc(clamp(1rem, 20cqi, 4.5rem) * var(--tp-es-fs)); line-height: 1; font-weight: 700; }
+
+.tp-es-card-caption {
     margin-top: 0.4em;
     font-size: calc(clamp(0.6rem, 6.5cqi, 1.125rem) * var(--tp-es-fs));
     line-height: 1.3;
     opacity: 0.85;
 }
 
-/* Крупный текст по центру и подпись под ним */
-.tp-es-cards--center .tp-es-card-body {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.tp-es-card--caption-size-s .tp-es-card-caption { font-size: calc(clamp(0.6rem, 5.5cqi, 0.95rem) * var(--tp-es-fs)); }
+.tp-es-card--caption-size-l .tp-es-card-caption { font-size: calc(clamp(0.7rem, 7.5cqi, 1.35rem) * var(--tp-es-fs)); }
+
+.tp-es-card-icon {
+    display: block;
+    width: clamp(20px, 22cqi, 72px);
+    height: clamp(20px, 22cqi, 72px);
+    flex-shrink: 0;
 }
 
-.tp-es-cards--center .tp-es-card-title {
-    font-size: calc(clamp(1rem, 20cqi, 4.5rem) * var(--tp-es-fs));
-    line-height: 1;
-    font-weight: 700;
-}
-
-.tp-es-cards--center .tp-es-card-caption {
-    margin-top: 0.5em;
-    font-size: calc(clamp(0.6rem, 7cqi, 1.25rem) * var(--tp-es-fs));
-    line-height: 1.3;
-}
-
-/* --- Иконка слева, текст справа: горизонтальная, высота по содержимому --- */
-.tp-es-cards--icon-left .tp-es-card::before,
-.tp-es-cards--photo-top .tp-es-card::before {
-    display: none;
-}
-
-.tp-es-cards--icon-left .tp-es-card-body {
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-    padding: 20px 24px;
-}
-
-.tp-es-cards--icon-left .tp-es-card-icon {
-    width: 44px;
-    height: 44px;
-}
-
-.tp-es-cards--icon-left .tp-es-card-title {
-    font-size: calc(1.15rem * var(--tp-es-fs));
-    line-height: 1.25;
-    font-weight: 500;
-}
-
-.tp-es-cards--icon-left .tp-es-card-caption {
-    margin-top: 0.3em;
-    font-size: calc(0.95rem * var(--tp-es-fs));
-    line-height: 1.35;
-    opacity: 0.85;
-}
-
-@media (max-width: 639px) {
-    .tp-es-cards--icon-left.tp-es-cards--3,
-    .tp-es-cards--icon-left.tp-es-cards--4 {
-        grid-template-columns: minmax(0, 1fr);
-    }
-}
+.tp-es-card--icon-size-s .tp-es-card-icon { width: clamp(20px, 14cqi, 44px); height: clamp(20px, 14cqi, 44px); }
+.tp-es-card--icon-size-l .tp-es-card-icon { width: clamp(28px, 30cqi, 104px); height: clamp(28px, 30cqi, 104px); }
+.tp-es-card--icon-size-xl .tp-es-card-icon { width: clamp(32px, 40cqi, 140px); height: clamp(32px, 40cqi, 140px); }
 
 /* --- Фото сверху, текст снизу --- */
 .tp-es-cards--photo-top .tp-es-card,
@@ -451,22 +457,6 @@ html {
     background: transparent;
     border: 2px solid;
     box-shadow: none;
-}
-
-.tp-es-card-icon-wrap {
-    display: flex;
-}
-
-.tp-es-card-icon {
-    display: block;
-    width: clamp(20px, 22cqi, 72px);
-    height: clamp(20px, 22cqi, 72px);
-    flex-shrink: 0;
-}
-
-.tp-es-cards--6 .tp-es-card-icon {
-    width: clamp(28px, 16cqi, 64px);
-    height: clamp(28px, 16cqi, 64px);
 }
 
 .tp-es-icon-img {
@@ -597,6 +587,18 @@ html {
     font-size: 1.15em;
 }
 
+.tp-es-faq .tp-faq-item {
+    background-color: var(--tp-es-faq-bg, #FFFFFF);
+}
+
+.tp-es-faq .tp-faq-item:hover {
+    background-color: var(--tp-es-faq-hover-bg, var(--tp-es-faq-bg, #FFFFFF));
+}
+
+.tp-es-faq .tp-faq-item:hover .tp-faq-trigger {
+    color: var(--tp-es-faq-hover-color, var(--tp-es-faq-color, #000000));
+}
+
 .tp-es-faq .tp-faq-content {
     background: transparent;
 }
@@ -632,21 +634,33 @@ html {
  * --tp-es-scale    масштаб конкретного логотипа (1 = 100%)
  * --tp-es-row-scale самый крупный масштаб в секции → высота ячеек
  * Картинка вписывается в рамку целиком (object-fit: contain) — не обрезается и не искажается.
+ * Flex, а не grid: неполный последний ряд можно поставить по центру.
  */
 .tp-es-partners {
     --tp-es-h: var(--tp-es-logo-h, 90px);
-    display: grid;
-    grid-template-columns: repeat(var(--tp-es-per-row, 5), minmax(0, 1fr));
-    gap: 32px;
+    --tp-es-n: var(--tp-es-per-row, 5);
+    --tp-es-gap: 32px;
+    --tp-es-pad: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
+    gap: var(--tp-es-gap);
+}
+
+.tp-es-partners--left {
+    justify-content: flex-start;
 }
 
 .tp-es-partner {
+    box-sizing: border-box;
+    flex: 0 0 calc((100% - (var(--tp-es-n) - 1) * var(--tp-es-gap)) / var(--tp-es-n));
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 0;
-    height: calc(var(--tp-es-h) * var(--tp-es-row-scale, 1));
+    height: calc(var(--tp-es-h) * var(--tp-es-row-scale, 1) + 2 * var(--tp-es-pad));
+    padding: var(--tp-es-pad);
 }
 
 .tp-es-partner-box {
@@ -664,12 +678,11 @@ html {
 }
 
 .tp-es-partners--tiles {
-    gap: 16px;
+    --tp-es-gap: 16px;
+    --tp-es-pad: 20px;
 }
 
 .tp-es-partners--tiles .tp-es-partner {
-    box-sizing: content-box;
-    padding: 20px;
     border-radius: 14px;
     background: var(--tp-es-tile-bg, #ffffff);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
@@ -685,11 +698,11 @@ a.tp-es-partner:hover {
 
 @media (max-width: 767px) {
     .tp-es-partners {
-        grid-template-columns: repeat(var(--tp-es-per-row-mobile, 2), minmax(0, 1fr));
-        gap: 20px;
+        --tp-es-n: var(--tp-es-per-row-mobile, 2);
+        --tp-es-gap: 20px;
     }
-    .tp-es-partners--tiles .tp-es-partner {
-        padding: 12px;
+    .tp-es-partners--tiles {
+        --tp-es-pad: 12px;
     }
 }
 

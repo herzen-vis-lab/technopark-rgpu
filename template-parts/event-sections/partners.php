@@ -16,7 +16,7 @@ $style = '--tp-es-tile-bg: ' . $tile_bg . '; --tp-es-per-row: ' . (int) $s['per_
 <?php if ($s['title']) : ?>
     <h2 class="tp-es-title tp-es-title--center"><?php echo esc_html($s['title']); ?></h2>
 <?php endif; ?>
-<div class="tp-es-partners<?php echo $s['tiles'] ? ' tp-es-partners--tiles' : ''; ?>" style="<?php echo esc_attr($style); ?>">
+<div class="tp-es-partners<?php echo $s['tiles'] ? ' tp-es-partners--tiles' : ''; ?><?php echo ($s['align'] ?? 'center') === 'left' ? ' tp-es-partners--left' : ''; ?>" style="<?php echo esc_attr($style); ?>">
     <?php foreach ($items as $item) :
         // 'large' и крупнее WordPress не обрезает; в srcset попадают только размеры с теми же пропорциями
         $img = wp_get_attachment_image($item['image'], 'large', false, array(

@@ -23,6 +23,7 @@ jQuery(function ($) {
     var editorCounter = 0;
     var pendingEditors = [];   // textarea-заготовки, которые нужно превратить в TinyMCE после вставки в DOM
     var activeEditors = [];
+    var openGroups = new WeakMap(); // объект → {ключ группы: раскрыта ли}; переживает перерисовку формы
     state.forEach(function (s) { s._uid = nextUid++; });
 
     // ---------- данные ----------
@@ -34,7 +35,9 @@ jQuery(function ($) {
     function defaultsFor(fields) {
         var o = {};
         fields.forEach(function (f) {
-            if (f.type === 'repeater') {
+            if (f.type === 'group') {
+                $.extend(o, defaultsFor(f.fields));
+            } else if (f.type === 'repeater') {
                 o[f.key] = (f['default'] || []).map(function (item) {
                     return $.extend(defaultsFor(f.fields), clone(item));
                 });
@@ -154,6 +157,9 @@ jQuery(function ($) {
                 $control = iconControl(obj[f.key], function () { save(); });
                 break;
 
+            case 'group':
+                return $wrap.append(groupControl(f, obj, onChange));
+
             case 'repeater':
                 if (!Array.isArray(obj[f.key])) obj[f.key] = [];
                 $control = repeaterControl(f, obj[f.key]);
@@ -272,6 +278,22 @@ jQuery(function ($) {
             $box.append($('<label class="tp-es-inline">').append('Скругление: ', $radius));
         }
         return $box;
+    }
+
+    // Сворачиваемый блок полей; значения хранятся прямо в obj, как у обычных полей.
+    // Раскрыт, если его открыли руками, а по умолчанию — если 'open' в схеме или в нём что-то изменено.
+    function groupControl(f, obj, onChange) {
+        var opened = openGroups.get(obj) || {};
+        openGroups.set(obj, opened);
+        var isOpen = f.key in opened ? opened[f.key] : (!!f.open || f.fields.some(function (sub) {
+            var def = sub['default'] !== undefined ? sub['default'] : '';
+            return obj[sub.key] !== undefined && obj[sub.key] !== def;
+        }));
+        var $details = $('<details class="tp-es-group">').prop('open', isOpen)
+            .on('toggle', function () { opened[f.key] = this.open; });
+        $details.append($('<summary>').text(f.label));
+        if (f.help) $details.append($('<p class="description">').text(f.help));
+        return $details.append(fieldsGrid(f.fields, obj, onChange));
     }
 
     function moveItem(list, from, to) {
