@@ -570,7 +570,7 @@ function tp_es_video_embed($url) {
 }
 
 function tp_es_text_html($text) {
-    return wpautop(wp_kses_post($text));
+    return technopark_relative_content_urls(wpautop(wp_kses_post($text)));
 }
 
 function tp_es_event_dates($post_id) {

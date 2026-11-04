@@ -20,7 +20,7 @@ $socials = get_post_meta($settings_id, '_footer_socials', true) ?: [];
             <nav class="text-center text-body">
                 <ul class="list-none space-y-2 pl-0">
                     <?php foreach ($docs as $doc) : ?>
-                        <li><a href="<?php echo esc_url($doc['link']); ?>" class="footer-link"><?php echo esc_html($doc['title']); ?></a></li>
+                        <li><a href="<?php echo esc_url(technopark_relative_url($doc['link'])); ?>" class="footer-link"><?php echo esc_html($doc['title']); ?></a></li>
                     <?php endforeach; ?>
                 </ul>
             </nav>
@@ -28,7 +28,7 @@ $socials = get_post_meta($settings_id, '_footer_socials', true) ?: [];
             <!-- Контакты + Соцсети -->
             <div class="text-body text-center md:text-right">
                 <?php foreach ($contacts as $contact) : ?>
-                    <a href="<?php echo esc_url($contact['link']); ?>" class="footer-link mt-2 inline-block"><?php echo esc_html($contact['text']); ?></a>
+                    <a href="<?php echo esc_url(technopark_relative_url($contact['link'])); ?>" class="footer-link mt-2 inline-block"><?php echo esc_html($contact['text']); ?></a>
                 <?php endforeach; ?>
 
                 <div class="mt-4 flex flex-col items-center gap-3 md:items-end">

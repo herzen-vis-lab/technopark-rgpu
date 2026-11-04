@@ -27,7 +27,7 @@ get_header();
         <?php endif; ?>
         
         <div class="text-body prose max-w-none mb-4">
-            <?php echo wp_kses_post($full_description); ?>
+            <?php echo technopark_relative_content_urls(wp_kses_post($full_description)); ?>
         </div>
         
         <?php if (!empty($buttons)) : ?>

@@ -30,7 +30,7 @@ if (empty($documents)) {
                             <?php echo esc_html($doc->post_title); ?>
                         </p>
                     </div>
-                    <a href="<?php echo esc_url($link ?: '#'); ?>" 
+                    <a href="<?php echo esc_url($link ? technopark_relative_url($link) : '#'); ?>" 
                        target="_blank"
                        class="tp-btn tp-btn--primary whitespace-nowrap text-center sm:text-left">
                         Открыть документ

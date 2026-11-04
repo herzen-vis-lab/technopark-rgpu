@@ -41,8 +41,40 @@ function technopark_button_url($url) {
     if ($url !== '' && preg_match('~^https?://(www\.)?forms\.yandex\.ru/~i', $url)) {
         $url = remove_query_arg('iframe', $url);
     }
-    return $url;
+    return technopark_relative_url($url);
 }
+
+// Домены technopark и technopark-dev менялись местами: полный адрес, вписанный в админке
+// или в текст записи, после смены уводит на другой сайт. Ссылки на свой сайт выводим относительными.
+function technopark_own_host_regex() {
+    static $re = null;
+    if ($re === null) {
+        $hosts = array('technopark.herzen.spb.ru', 'technopark-dev.herzen.spb.ru', (string) wp_parse_url(home_url(), PHP_URL_HOST));
+        $hosts = array_map('preg_quote', array_unique(array_filter($hosts)));
+        // хвост (?=...) — чтобы не задеть чужой домен вида technopark.herzen.spb.ru.example.com
+        $re = '~(?:https?:)?//(?:www\.)?(?:' . implode('|', $hosts) . ')(?::\d+)?(?=([/?#\s,]|$))~i';
+    }
+    return $re;
+}
+
+function technopark_relative_url($url) {
+    $url = trim((string) $url);
+    if (!preg_match(technopark_own_host_regex(), $url, $m) || strpos($url, $m[0]) !== 0) return $url;
+    $rest = substr($url, strlen($m[0]));
+    return ($rest === '' || $rest[0] !== '/') ? '/' . $rest : $rest;
+}
+
+// То же для href/src/srcset внутри HTML записи (картинки и ссылки, вставленные в редакторе)
+function technopark_relative_content_urls($html) {
+    if (strpos($html, 'technopark') === false) return $html;
+    return preg_replace_callback('~(\s(?:href|src|srcset)=)(["\'])(.*?)\2~i', function ($a) {
+        $value = preg_replace_callback(technopark_own_host_regex(), function ($m) {
+            return $m[1] === '/' ? '' : '/';
+        }, $a[3]);
+        return $a[1] . $a[2] . $value . $a[2];
+    }, $html);
+}
+add_filter('the_content', 'technopark_relative_content_urls', 20);
 
 // Версия = дата изменения файла для всех CSS/JS темы. Плагин Theme Editor (ms_theme_editor_src)
 // подменяет ?ver= у файлов темы на версию темы (1.0.0), и после деплоя браузеры не видели новых стилей.

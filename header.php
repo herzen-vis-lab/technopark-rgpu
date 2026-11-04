@@ -56,7 +56,7 @@ if (empty($header_logo_url)) {
                             </button>
                             <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100">
                                 <?php foreach ($item['children'] as $child) : ?>
-                                    <a href="<?php echo esc_url($child['link']); ?>" 
+                                    <a href="<?php echo esc_url(technopark_relative_url($child['link'])); ?>" 
                                        class="block px-4 py-2 text-body text-black hover:bg-primary hover:text-white mb-1"  style="text-decoration: none;"
                                        target="<?php echo esc_attr($child['target']); ?>">
                                         <?php echo esc_html($child['text']); ?>
@@ -65,7 +65,7 @@ if (empty($header_logo_url)) {
                             </div>
                         </div>
                     <?php else : ?>
-                        <a href="<?php echo esc_url($item['link']); ?>" 
+                        <a href="<?php echo esc_url(technopark_relative_url($item['link'])); ?>" 
                            class="nav-link"
                            target="<?php echo esc_attr($item['target']); ?>">
                             <?php echo esc_html($item['text']); ?>
@@ -100,7 +100,7 @@ if (empty($header_logo_url)) {
                         </button>
                         <div class="mobile-faq-content hidden pl-4 mt-1 space-y-1">
                             <?php foreach ($item['children'] as $child) : ?>
-                                <a href="<?php echo esc_url($child['link']); ?>" 
+                                <a href="<?php echo esc_url(technopark_relative_url($child['link'])); ?>" 
                                    class="block py-2 px-3 text-body text-black hover:bg-neutral-200 rounded"
                                     style="text-decoration: none;"
                                    target="<?php echo esc_attr($child['target']); ?>">
@@ -110,7 +110,7 @@ if (empty($header_logo_url)) {
                         </div>
                     </div>
                 <?php else : ?>
-                    <a href="<?php echo esc_url($item['link']); ?>" 
+                    <a href="<?php echo esc_url(technopark_relative_url($item['link'])); ?>" 
                        class="nav-link py-2 hover:bg-neutral-200 px-3 rounded"
                        target="<?php echo esc_attr($item['target']); ?>">
                         <?php echo esc_html($item['text']); ?>
