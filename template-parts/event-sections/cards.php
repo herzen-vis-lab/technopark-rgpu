@@ -10,8 +10,8 @@ if (!$s['items'] && !$s['title']) return;
 $look_keys = array('icon_pos', 'valign', 'title_align', 'caption_align', 'title_size', 'caption_size', 'icon_size');
 $photo = $s['photo'] ?? 'none';
 $outline = ($s['fill'] ?? 'fill') === 'outline';
-// фото сверху занимает квадрат само, карточка растёт по содержимому
-$height = $photo === 'top' ? 'auto' : ($s['height'] ?? 'square');
+// фото сверху или в круге задаёт высоту само, карточка растёт по содержимому
+$height = in_array($photo, array('top', 'circle'), true) ? 'auto' : ($s['height'] ?? 'square');
 
 $grid_classes = array(
     'tp-es-cards',

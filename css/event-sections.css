@@ -441,6 +441,31 @@ html {
     flex: 0 0 auto;
 }
 
+/* --- Фото по центру в круге, текст снизу --- */
+.tp-es-cards--photo-circle .tp-es-card {
+    flex-direction: column;
+}
+
+.tp-es-cards--photo-circle .tp-es-card-photo {
+    align-self: center;
+    width: 64cqi;
+    aspect-ratio: 1;
+    margin-top: clamp(8px, 9cqi, 32px);
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.tp-es-cards--photo-circle .tp-es-card-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tp-es-cards--photo-circle .tp-es-card-body {
+    flex: 0 0 auto;
+}
+
 /* --- Фото на фоне, текст поверх (затемнение снизу для читаемости) --- */
 .tp-es-cards--photo-bg .tp-es-card-photo {
     position: absolute;

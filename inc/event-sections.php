@@ -132,10 +132,10 @@ function tp_es_schema() {
                             array('key' => 'fill', 'type' => 'select', 'label' => 'Фон карточек', 'default' => 'fill',
                                 'options' => array('fill' => 'Заливка', 'outline' => 'Контур (без заливки)')),
                             array('key' => 'photo', 'type' => 'select', 'label' => 'Фото карточки', 'default' => 'none',
-                                'options' => array('none' => 'Без фото', 'top' => 'Фото сверху', 'bg' => 'Фото на фоне, текст поверх')),
+                                'options' => array('none' => 'Без фото', 'top' => 'Фото сверху', 'circle' => 'Фото по центру в круге', 'bg' => 'Фото на фоне, текст поверх')),
                             array('key' => 'height', 'type' => 'select', 'label' => 'Высота', 'default' => 'square',
                                 'options' => array('square' => 'Квадратная (растёт под текст)', 'auto' => 'По содержимому'),
-                                'help' => 'С фото сверху — всегда по содержимому.'),
+                                'help' => 'С фото сверху или в круге — всегда по содержимому.'),
                         ), tp_es_card_look_fields(false), array(
                             array('key' => 'card_bg', 'type' => 'color', 'label' => 'Цвет карточек', 'default' => '#64BDE1'),
                             array('key' => 'card_color', 'type' => 'color', 'label' => 'Цвет текста карточек', 'default' => '#FFFFFF'),
@@ -146,7 +146,7 @@ function tp_es_schema() {
                             array('key' => 'title', 'type' => 'text', 'label' => 'Надпись / крупный текст'),
                             array('key' => 'caption', 'type' => 'text', 'label' => 'Подпись (необязательно)'),
                             array('key' => 'image', 'type' => 'image', 'label' => 'Фото карточки',
-                                'help' => 'Если в оформлении выбрано фото сверху или на фоне.'),
+                                'help' => 'Если в оформлении выбрано фото сверху, в круге или на фоне.'),
                             array('key' => 'own_look', 'type' => 'group', 'label' => 'Своё оформление',
                                 'fields' => array_merge(tp_es_card_look_fields(true), array(
                                     array('key' => 'bg', 'type' => 'color', 'label' => 'Свой цвет карточки', 'default' => ''),
